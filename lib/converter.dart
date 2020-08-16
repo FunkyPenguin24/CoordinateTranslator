@@ -1,5 +1,3 @@
-import 'package:coord_translator/maths/LatLongEllipsodialDatum.dart';
-
 import 'maths/Datums.dart';
 import 'maths/LatLong.dart';
 import 'maths/OSRef.dart';

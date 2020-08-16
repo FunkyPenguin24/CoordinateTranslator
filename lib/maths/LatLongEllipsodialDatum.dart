@@ -1,6 +1,5 @@
 import 'LatLongEllipsodial.dart';
 import 'CartesianDatum.dart';
-import 'Datums.dart';
 
 class LatLongEllipsodialDatum extends LatLongEllipsodial {
 

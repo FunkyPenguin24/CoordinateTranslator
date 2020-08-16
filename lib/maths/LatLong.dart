@@ -2,7 +2,6 @@ import 'LatLongEllipsodialDatum.dart';
 import 'package:vector_math/vector_math.dart';
 import 'OSRef.dart';
 import 'dart:math' as Math;
-import 'Datums.dart';
 
 class LatLong extends LatLongEllipsodialDatum {
 

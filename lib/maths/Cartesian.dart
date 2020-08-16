@@ -1,7 +1,6 @@
 import 'dart:math' as Math;
 import 'package:vector_math/vector_math.dart';
 
-import 'LatLongEllipsodial.dart';
 import 'LatLong.dart';
 
 class Cartesian extends Vector3 {
