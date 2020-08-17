@@ -2,6 +2,12 @@
 
 A flutter application for converting coordinates from Lat/Long to OSGB36 grid references and vice versa
 
+## Building the project
+
+This repository is a flutter project, not a built app, so you can clone it and edit the project however you want. 
+I did build the app when I completed it, and a built version of the android app can be found [here](../build/app/outputs/flutter-app/app-release.apk).
+I have no experiencing with iOS apps so if you want to build it on an apple device you will have to clone the repository and build it yourself, sorry about that :(
+
 ## Translating coordinates
 
 The app takes an input of latitude and longitude coordinates using the WGS84 datum (this is the most widely used datum around the world for lat and long coordinates used by GPS systems).
