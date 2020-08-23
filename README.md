@@ -60,7 +60,7 @@ void convertToOS(double lat, double long) {
 	LatLong latLong = new LatLong(lat, long, 0, Datums.WGS84);
 	OSRef osRef = latLong.toOsGrid();
 	double easting = osRef.easting;
-	double northing = osRef.northing();
+	double northing = osRef.northing;
 	//do what you want with easting and northing
 }
 ```
