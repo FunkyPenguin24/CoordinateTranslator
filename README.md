@@ -30,7 +30,7 @@ The OSGB36 datum uses the Airy 1830 ellipsoid, whilst the WGS84 datum uses the W
 
 ### Get the package
 
-I have written the converter and maths up into its own package so anyone can import it into their dart or flutter projects, you can find the package on the pub.dev site [here](https://pub.dev/packages/latlong_to_osgrid), and the source code on github [here](https://github.com/FunkyPenguin24/latlong_to_osgrid).
+I have written the converter and maths up into its own package so anyone can import it into their dart or flutter projects, you can find the package on the pub.dev site [here](https://pub.dev/packages/latlong_to_osgrid), and the source code on github [here](https://github.com/FunkyPenguin24/latlong_to_osgrid). Please see the source code for examples on using the package.
 
 ### Translating coordinates between datums
 
@@ -52,19 +52,3 @@ The [Ordnance Survey Reference object](lib/maths/OSRef.dart) contains the functi
 If you're going to use the library in any projects and want to convert OS Grid References to another datum for any reason, you can specify this as a parameter when you call the toLatLon function (no parameter means it'll return WGS84)
 All datums are available through the [Datums file](lib/maths/Datums.dart), simply import that and pass the datums object that you want to convert the reference to (e.g. Datums.WGS84)
 Please see the function toLatLong() for the full maths.
-
-## Example function
-
-```dart
-import 'maths/LatLong.dart';
-import 'maths/OSRef.dart';
-import 'maths/Datums.dart';
-
-void convertToOS(double lat, double long) {
-	LatLong latLong = new LatLong(lat, long, 0, Datums.WGS84);
-	OSRef osRef = latLong.toOsGrid();
-	double easting = osRef.easting;
-	double northing = osRef.northing;
-	//do what you want with easting and northing
-}
-```
