@@ -12,9 +12,9 @@ The build is available under the release section of the repository in the form o
 The app takes an input of latitude and longitude coordinates using the WGS84 datum (this is the most widely used datum around the world for lat and long coordinates used by GPS systems).
 Any coordinates retrieved via GPS (most phones) will be in WGS84 format
 Coordinates can be inputted in either decimal format or in degrees, minutes and seconds.
-The resulting conversion will output a 6 digit easting and a 6 digit northing reference along with the full Ordnance Survey reference.
+The resulting conversion will output a 6 digit easting and a 6 digit northing reference along with the full Ordnance Survey reference in letter pair format.
 
-There is also an option to enter in a 6 digit easting and 6 digit northing, or full OS reference, which the app will convert into latitude and longitude coordinates.
+There is also an option to enter in a 6 digit easting and 6 digit northing, or full OS reference in letter pair format, which the app will convert into latitude and longitude coordinates.
 As in the first section, these lat and long coordinates can be presented in decimal format or degrees, minutes and seconds.
 
 ## The maths

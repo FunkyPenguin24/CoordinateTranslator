@@ -39,7 +39,8 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
 
   TextEditingController eastingController = TextEditingController();
   TextEditingController northingController = TextEditingController();
-  TextEditingController fullRefController = TextEditingController();
+  TextEditingController numRefController = TextEditingController();
+  TextEditingController letterRefController = TextEditingController();
 
   LatLongConverter converter = new LatLongConverter();
 
@@ -96,16 +97,16 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
         result = converter.getOSGBfromDms(double.parse(latDegController.text), double.parse(latMinController.text), double.parse(latSecController.text), double.parse(longDegController.text), double.parse(longMinController.text), double.parse(longSecController.text));
       }
 
-      String easting, northing, fullRef;
+      String easting, northing, numRef, letterRef;
       easting = "${result.easting}";
-      easting = easting.substring(0, easting.length-2);
       northing = "${result.northing}";
-      northing = northing.substring(0, northing.length-2);
-      fullRef = "$easting,$northing";
+      numRef = result.numericalRef;
+      letterRef = result.letterRef;
 
       eastingController.text = easting;
       northingController.text =  northing;
-      fullRefController.text = fullRef;
+      numRefController.text = numRef;
+      letterRefController.text = letterRef;
     }
   }
 
@@ -155,7 +156,8 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
 
     eastingController.text = "";
     northingController.text = "";
-    fullRefController.text = "";
+    numRefController.text = "";
+    letterRefController.text = "";
   }
 
   void copyFieldToClipboard(TextEditingController field) {
@@ -283,7 +285,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                 longFocus.requestFocus();
               },
               decoration: InputDecoration(
-                hintText: "52.9623",
+                hintText: "53.9623",
                 suffixIcon: SizedBox(
                   width: 50,
                   child: IconButton(
@@ -549,7 +551,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                                 controller: eastingController,
                                 enabled: false,
                                 decoration: InputDecoration(
-                                  hintText: "461766",
+                                  hintText: "460334",
                                 ),
                               ),
                             ),
@@ -582,7 +584,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                                 controller: northingController,
                                 enabled: false,
                                 decoration: InputDecoration(
-                                  hintText: "340942",
+                                  hintText: "452192",
                                 ),
                               ),
                             ),
@@ -605,7 +607,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
             Row(
               children: [
                 Text(
-                  "Full OS grid reference",
+                  "Full numerical reference",
                   style: TextStyle(
                     fontSize: 20.0,
                   ),
@@ -616,17 +618,48 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
               children: [
                 Expanded(
                   child: TextFormField(
-                    controller: fullRefController,
+                    controller: numRefController,
                     enabled: false,
                     decoration: InputDecoration(
-                      hintText: "461766,340942",
+                      hintText: "460334 452192",
                     ),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.content_copy),
                   iconSize: 18.0,
-                  onPressed: () => copyFieldToClipboard(fullRefController),
+                  onPressed: () => copyFieldToClipboard(numRefController),
+                ),
+              ],
+            ),
+
+            Padding(padding: EdgeInsets.only(bottom: 16.0)),
+
+            Row(
+              children: [
+                Text(
+                  "Full letter reference",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: letterRefController,
+                    enabled: false,
+                    decoration: InputDecoration(
+                      hintText: "SE 60334 52192",
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.content_copy),
+                  iconSize: 18.0,
+                  onPressed: () => copyFieldToClipboard(letterRefController),
                 ),
               ],
             ),
