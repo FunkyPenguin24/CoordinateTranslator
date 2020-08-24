@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart';
-import 'maths/OSRef.dart';
-import 'converter.dart';
+import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 
 class LatLongToOSGB extends StatefulWidget {
 
@@ -42,7 +41,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
   TextEditingController northingController = TextEditingController();
   TextEditingController fullRefController = TextEditingController();
 
-  Converter converter = new Converter();
+  LatLongConverter converter = new LatLongConverter();
 
   void locate() async {
     Location location = new Location();

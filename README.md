@@ -23,6 +23,10 @@ The Ordnance Survey Grid uses latitude and longitude coordinates of the OSGB36 d
 Since the OS Grid is still based off the OSGB36 datum, in order to translate WGS84 latitude and longitudes to Grid References, they must first be transformed into OSGB36 latitude and longitudes.
 The OSGB36 datum uses the Airy 1830 ellipsoid, whilst the WGS84 datum uses the WGS84 ellipsoid.
 
+### Get the package
+
+I have written the converter and maths up into its own package so anyone can import it into their dart or flutter projects, you can find the package on the pub.dev site [here](https://pub.dev/packages/latlong_to_osgrid), and the source code on github [here](https://github.com/FunkyPenguin24/latlong_to_osgrid).
+
 ### Translating coordinates between datums
 
 The coordinates are converted between datums in a three step process, one of which uses what is known as a "Helmert transformation"
