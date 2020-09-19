@@ -197,7 +197,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
   bool longDecimalFilled() => longController.text.isNotEmpty;
 
   @override
-  Widget build(BuildContext build) {
+  Widget build(BuildContext context) {
     String type = widget.settings["Lat/Long type"];
     return Form(
       key: _formKey,

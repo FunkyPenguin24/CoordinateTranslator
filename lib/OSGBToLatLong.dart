@@ -151,7 +151,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   }
 
   @override
-  Widget build(BuildContext build) {
+  Widget build(BuildContext context) {
     String type = widget.settings["Lat/Long type"];
     return Form(
       key: _formKey,

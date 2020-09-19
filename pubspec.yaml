@@ -26,6 +26,8 @@ dependencies:
   http: ^0.12.2
   location: ^3.0.2
   latlong_to_osgrid: ^1.2.2
+  path_provider: ^1.6.10
+  pull_to_refresh: ^1.6.0
 
 
   # The following adds the Cupertino Icons font to your application.
