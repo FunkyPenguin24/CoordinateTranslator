@@ -5,8 +5,9 @@ import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 
 class LatLongToOSGB extends StatefulWidget {
 
+  Function(LatLong, OSRef) callback;
   Map<String, String> settings;
-  LatLongToOSGB(this.settings);
+  LatLongToOSGB(this.settings, this.callback);
 
   LatLongToOSGBState createState() => LatLongToOSGBState();
 }
@@ -90,11 +91,14 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
         showErrorMessage(ex.toString());
         throw ex;
       }
+      LatLong latLong;
       OSRef result; //result will be osref
       if (widget.settings["Lat/Long type"] == "Decimal") {
         result = converter.getOSGBfromDec(double.parse(latController.text), double.parse(longController.text));
+        latLong = new LatLong(double.parse(latController.text), double.parse(longController.text), 0, Datums.WGS84);
       } else {
         result = converter.getOSGBfromDms(double.parse(latDegController.text), double.parse(latMinController.text), double.parse(latSecController.text), double.parse(longDegController.text), double.parse(longMinController.text), double.parse(longSecController.text));
+        latLong = new LatLong.fromDms(double.parse(latDegController.text), double.parse(latMinController.text), double.parse(latSecController.text), double.parse(longDegController.text), double.parse(longMinController.text), double.parse(longSecController.text), 0, Datums.WGS84);
       }
 
       String easting, northing, numRef, letterRef;
@@ -107,6 +111,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
       northingController.text =  northing;
       numRefController.text = numRef;
       letterRefController.text = letterRef;
+      widget.callback(latLong, result);
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'Places.dart';
 
@@ -12,12 +13,14 @@ class MyPlacesScreenState extends State<MyPlacesScreen> {
 
   RefreshController _refreshController = RefreshController(initialRefresh: true);
   PlaceManager pm = new PlaceManager();
+  List<Place> favPlaces = new List();
 
-  refreshList() {
-    this.setState(() async {
-      await pm.loadFavPlaces();
-      _refreshController.refreshCompleted();
+  refreshList() async {
+    await pm.loadFavPlaces();
+    this.setState(() {
+      favPlaces = pm.favPlaces;
     });
+    _refreshController.refreshCompleted();
   }
 
   @override
@@ -31,7 +34,11 @@ class MyPlacesScreenState extends State<MyPlacesScreen> {
         ),
       ),
       body: Center(
-
+        child: Stack(
+          children: [
+            getFavWidgets(),
+          ],
+        ),
       ),
     );
   }
@@ -39,10 +46,73 @@ class MyPlacesScreenState extends State<MyPlacesScreen> {
   Widget getFavWidgets() {
     List<Widget> widgetList = new List<Widget>();
 
+    for (Place p in favPlaces) {
+      List<dynamic> latDms = LatLongConverter().getDegreeFromDecimal(p.latLong.getLat());
+      List<dynamic> lonDms = LatLongConverter().getDegreeFromDecimal(p.latLong.getLon());
+      widgetList.add(InkWell(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.blue,
+              width: 4,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    p.name,
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              Padding(padding: EdgeInsets.only(top: 10.0)),
+              Text(
+                latDms[0].toString() + "° " + latDms[1].toString() + "' " + latDms[2].toString() + "\" N",
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(top: 5.0)),
+              Text(
+                lonDms[0].toString() + "° " + lonDms[1].toString() + "' " + lonDms[2].toString() + "\" E",
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(top: 5.0)),
+              Text(
+                p.latLong.getLat().toString() +  ", " + p.latLong.getLon().toString(),
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(top: 5.0)),
+              Text(
+                p.gridRef.letterRef,
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ));
+
+      widgetList.add(Padding(padding: EdgeInsets.only(top: 15.0)));
+    }
+
     return new SmartRefresher(
       controller: _refreshController,
       enablePullDown: true,
-      onRefresh: refreshList(),
+      onRefresh: refreshList,
       child: ListView(
         padding: EdgeInsets.all(16.0),
         scrollDirection: Axis.vertical,

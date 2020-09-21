@@ -6,13 +6,13 @@ import 'dart:convert' as convert;
 
 class PlaceManager {
 
-  List<Place> favPlaces;
+  List<Place> favPlaces = new List();
 
-  void addPlace(Place p) {
+  void addFavPlace(Place p) {
     favPlaces.add(p);
   }
 
-  void removePlace(Place p) {
+  void removeFavPlace(Place p) {
     favPlaces.remove(p);
   }
 
