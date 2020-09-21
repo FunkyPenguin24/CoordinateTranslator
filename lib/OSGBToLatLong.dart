@@ -4,9 +4,10 @@ import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 
 class OSGBToLatLong extends StatefulWidget {
 
+  Function(LatLong, OSRef) callback;
   Map<String, String> settings;
 
-  OSGBToLatLong(this.settings);
+  OSGBToLatLong(this.settings, this.callback);
 
   OSGBToLatLongState createState() => OSGBToLatLongState();
 }
@@ -105,6 +106,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
         northingController.text = os.northing.toString();
         numRefController.text = os.numericalRef;
 
+        widget.callback(result, os);
         updateFields();
       } catch (ex) {
         showErrorMessage(ex.toString());

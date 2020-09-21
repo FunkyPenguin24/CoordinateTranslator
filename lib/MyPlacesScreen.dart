@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'PlaceDetailScreen.dart';
 import 'Places.dart';
 
 import 'SideDrawer.dart';
@@ -50,6 +51,11 @@ class MyPlacesScreenState extends State<MyPlacesScreen> {
       List<dynamic> latDms = LatLongConverter().getDegreeFromDecimal(p.latLong.getLat());
       List<dynamic> lonDms = LatLongConverter().getDegreeFromDecimal(p.latLong.getLon());
       widgetList.add(InkWell(
+        onTap: () async {
+          String result = await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => PlaceDetailScreen(p)));
+          if (result == "refresh")
+            refreshList();
+        },
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
@@ -83,13 +89,6 @@ class MyPlacesScreenState extends State<MyPlacesScreen> {
               Padding(padding: EdgeInsets.only(top: 5.0)),
               Text(
                 lonDms[0].toString() + "° " + lonDms[1].toString() + "' " + lonDms[2].toString() + "\" E",
-                style: TextStyle(
-                  fontSize: 14,
-                ),
-              ),
-              Padding(padding: EdgeInsets.only(top: 5.0)),
-              Text(
-                p.latLong.getLat().toString() +  ", " + p.latLong.getLon().toString(),
                 style: TextStyle(
                   fontSize: 14,
                 ),

@@ -13,6 +13,12 @@ class PlaceManager {
   }
 
   void removeFavPlace(Place p) {
+    for (Place pl in favPlaces) {
+      if (pl.name == p.name) {
+        p = pl;
+        break;
+      }
+    }
     favPlaces.remove(p);
   }
 

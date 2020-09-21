@@ -114,7 +114,24 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
   }
 
   showMustConvertDialog() {
-
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error!"),
+          content: Text("You must first complete a conversion before you can favourite a place"),
+          actions: [
+            FlatButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -172,7 +189,7 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
   Widget getTabView(String tab) {
     switch (tab) {
       case "Lat/Long to OSGB": return LatLongToOSGB(settings, setCurrentPlace); break;
-      case "OSGB to Lat/Long": return OSGBToLatLong(settings); break;
+      case "OSGB to Lat/Long": return OSGBToLatLong(settings, setCurrentPlace); break;
     }
   }
 
