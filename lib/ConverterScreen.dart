@@ -194,7 +194,7 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
   }
 
   void setCurrentPlace(LatLong latLong, OSRef gridRef) {
-    currPlace = new Place("", "", latLong, gridRef);
+    currPlace = new Place("", "", latLong, gridRef, "");
   }
 
 }

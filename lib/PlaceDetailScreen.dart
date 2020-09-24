@@ -1,5 +1,9 @@
+import 'dart:io';
+import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'Places.dart';
 import 'SideDrawer.dart';
@@ -17,11 +21,45 @@ class PlaceDetailScreen extends StatefulWidget {
 class PlaceDetailScreenState extends State<PlaceDetailScreen> {
   PlaceManager pm = new PlaceManager();
   bool editing = false;
+  File placeImage;
+  List<dynamic> latDms;
+  List<dynamic> lonDms;
 
   @override
   initState() {
     super.initState();
+    latDms = LatLongConverter().getDegreeFromDecimal(widget.place.latLong.getLat());
+    lonDms = LatLongConverter().getDegreeFromDecimal(widget.place.latLong.getLon());
+    if (widget.place.imagePath != "" || widget.place.imagePath != null)
+      loadPlaceImage();
     loadPlaces();
+  }
+
+  loadPlaceImage() async {
+    final loadDir = await getApplicationDocumentsDirectory();
+    String loadPath = "${loadDir.path}/${widget.place.imagePath}";
+    File newFile = File(loadPath);
+    this.setState(() {
+      placeImage = newFile;
+    });
+  }
+
+  getImage(String source) async {
+    final pickedImg = await ImagePicker().getImage(source: (source == "camera") ? ImageSource.camera : ImageSource.gallery);
+    if (pickedImg != null) {
+      File img = File(pickedImg.path);
+      this.setState(() {
+        placeImage = img;
+        widget.place.imagePath = path.basename(img.path);
+      });
+      //fix saving issue - app can't find pictures give the file name (might be something to do with pickedimg.path but not sure)
+      //look in to adding multiple pictures, maybe change imagePath in place object to a list
+      final saveDir = await getApplicationDocumentsDirectory();
+      String fileName = path.basename(img.path);
+      String savePath = "${saveDir.path}/$fileName}";
+      final savedImg = await img.copy(savePath);
+      pm.saveFavPlaces();
+    }
   }
 
   loadPlaces() async {
@@ -58,10 +96,42 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
     );
   }
 
+  showChangeImageDialog() {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Change photo"),
+          actions: [
+            FlatButton(
+              child: Text("Choose new picture from gallery"),
+              onPressed: () {
+                getImage("gallery");
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
+              child: Text("Take new picture"),
+              onPressed: () {
+                getImage("camera");
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              }
+            ),
+          ],
+        );
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<dynamic> latDms = LatLongConverter().getDegreeFromDecimal(widget.place.latLong.getLat());
-    List<dynamic> lonDms = LatLongConverter().getDegreeFromDecimal(widget.place.latLong.getLon());
     return Scaffold(
       drawer: SideDrawer(widget),
       appBar: AppBar(
@@ -71,17 +141,17 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              child: Icon((editing) ? Icons.check : Icons.edit, color: Colors.white),
-              onTap: () {
-                this.setState(() {
-                  //editing = !editing;
-                });
-              },
-            ),
-          ),
+//          Padding( //when i have the effort editing a place needs to be implemented
+//            padding: EdgeInsets.only(right: 20.0),
+//            child: GestureDetector(
+//              child: Icon((editing) ? Icons.check : Icons.edit, color: Colors.white),
+//              onTap: () {
+//                this.setState(() {
+//                  //editing = !editing;
+//                });
+//              },
+//            ),
+//          ),
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
@@ -97,8 +167,8 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
         children: [
           Padding(
             padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
+              //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   widget.place.name,
@@ -114,8 +184,14 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
                     fontSize: 18,
                   ),
                 ),
-                Padding(padding: EdgeInsets.only(top: 15.0)),
+                Padding(padding: EdgeInsets.only(top: 10.0)),
 
+                Divider(
+                  height: 10,
+                  thickness: 2,
+                ),
+
+                Padding(padding: EdgeInsets.only(top: 10.0)),
                 Text(
                   "Latitude (DMS)",
                   style: TextStyle(
@@ -174,6 +250,69 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
                     fontSize: 16,
                   ),
                 ),
+                Padding(padding: EdgeInsets.only(top: 10.0)),
+
+                Divider(
+                  height: 10,
+                  thickness: 2,
+                ),
+                Padding(padding: EdgeInsets.only(top: 10.0)),
+
+                (widget.place.imagePath == "" || widget.place.imagePath == null) ?
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "Add a photo!",
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(padding: EdgeInsets.only(bottom: 5.0)),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(right: 10.0),
+                                child: RaisedButton(
+                                  child: Icon(Icons.camera_alt),
+                                  onPressed: () {
+                                    getImage("camera");
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(right: 10.0),
+                                child: RaisedButton(
+                                  child: Icon(Icons.photo),
+                                  onPressed: () {
+                                    getImage("gallery");
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ) :
+                    InkWell(
+                      child: Container(
+                        child: Column(
+                          children: [
+                            Image.file(
+                              placeImage,
+                            ),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        showChangeImageDialog();
+                      },
+                    ),
               ],
             ),
           ),

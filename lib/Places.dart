@@ -51,20 +51,23 @@ class Place {
   String desc;
   LatLong latLong;
   OSRef gridRef;
+  String imagePath;
 
-  Place(this.name, this.desc, this.latLong, this.gridRef);
+  Place(this.name, this.desc, this.latLong, this.gridRef, this.imagePath);
 
   Place.fromJson(Map<String, dynamic> json)
   : name = json['name'],
     desc = json['desc'],
     latLong = LatLong.fromJson(json['latlong']),
-    gridRef = OSRef.fromJson(json['gridref']);
+    gridRef = OSRef.fromJson(json['gridref']),
+    imagePath = json['imagePath'];
 
   Map<String, dynamic> toJson() => {
     "name" : name,
     "desc" : desc,
     "latlong" : latLong.toJson(),
     "gridref" : gridRef.toJson(),
+    "imagePath" : imagePath,
   };
 
 }
