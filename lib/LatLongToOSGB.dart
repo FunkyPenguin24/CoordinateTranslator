@@ -538,18 +538,17 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
               width: MediaQuery.of(context).size.width,
               child: Row(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Easting",
-                        style: TextStyle(
-                          fontSize: 20.0,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Easting",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                          ),
                         ),
-                      ),
-                      Container(
-                        width: 150,
-                        child: Row(
+                        Row(
                           children: [
                             Expanded(
                               child: TextField(
@@ -567,22 +566,21 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   Padding(padding: EdgeInsets.only(right: 5.0)),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Northing",
-                        style: TextStyle(
-                          fontSize: 20.0,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Northing",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                          ),
                         ),
-                      ),
-                      Container(
-                        width: 150,
-                        child: Row(
+                        Row(
                           children: [
                             Expanded(
                               child: TextFormField(
@@ -600,8 +598,8 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                             ),
                           ],
                         ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),

@@ -139,7 +139,7 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
     return DefaultTabController(
         length: tabs.length,
         child: Scaffold(
-          drawer: SideDrawer(widget),
+          // drawer: SideDrawer(widget),
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
             centerTitle: true,
@@ -160,18 +160,18 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
                 tabControl.animateTo(index);
               },
             ),
-            actions: [
-              FlatButton(
-                onPressed: () {
-                  if (currPlace == null) {
-                    showMustConvertDialog();
-                  } else {
-                    getFavDetails();
-                  }
-                },
-                child: Icon(Icons.favorite),
-              ),
-            ],
+            // actions: [
+            //   FlatButton(
+            //     onPressed: () {
+            //       if (currPlace == null) {
+            //         showMustConvertDialog();
+            //       } else {
+            //         getFavDetails();
+            //       }
+            //     },
+            //     child: Icon(Icons.favorite),
+            //   ),
+            // ],
           ),
           body: TabBarView(
             controller: tabControl,
