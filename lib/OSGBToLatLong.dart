@@ -123,11 +123,11 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
   updateFields() {
     if (widget.settings["Lat/Long type"] == "Decimal") {
-      latController.text = (latDec == null) ? "" : "$latDec";
-      longController.text = (longDec == null) ? "" : "$longDec";
+      latController.text = (latDec == null) ? "" : "${latDec.toStringAsFixed(4)}";
+      longController.text = (longDec == null) ? "" : "${longDec.toStringAsFixed(4)}";
     } else {
-      latController.text = (latDec == null) ? "" : "${latDms[0]}° ${latDms[1]}' ${latDms[2]}\"";
-      longController.text = (longDec == null) ? "" : "${longDms[0]}° ${longDms[1]}' ${longDms[2]}\"";
+      latController.text = (latDec == null) ? "" : "${latDms[0]}° ${latDms[1]}' ${latDms[2].toStringAsFixed(4)}\"";
+      longController.text = (longDec == null) ? "" : "${longDms[0]}° ${longDms[1]}' ${longDms[2].toStringAsFixed(4)}\"";
     }
   }
 
