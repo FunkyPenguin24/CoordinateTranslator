@@ -2,6 +2,8 @@
 
 A flutter application for converting coordinates from Lat/Long to OSGB36 grid references and vice versa
 
+[Now available on Google Play!](https://play.google.com/store/apps/details?id=com.latlonpackage.coord_translator)
+
 ## Building the project
 
 This repository is a flutter project, not a built app, so you can clone it and edit the project however you want. 
