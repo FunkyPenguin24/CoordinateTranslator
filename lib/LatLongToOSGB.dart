@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
+import 'package:what3words/what3words.dart' as w3w;
 
 class LatLongToOSGB extends StatefulWidget {
 
@@ -44,6 +45,8 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
   TextEditingController letterRefController = TextEditingController();
 
   LatLongConverter converter = new LatLongConverter();
+
+  String threeWords = "";
 
   void locate() async {
     Location location = new Location();
@@ -112,7 +115,19 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
       numRefController.text = numRef;
       letterRefController.text = letterRef;
       widget.callback(latLong, result);
+      getWhatThreeWords(latLong);
     }
+  }
+
+  void getWhatThreeWords(LatLong latLong) async {
+    var api = w3w.What3WordsV3('ST2KVDLN');
+    var words = await api
+    .convertTo3wa(w3w.Coordinates(latLong.lat, latLong.long))
+    .language('en')
+    .execute();
+    this.setState(() {
+      threeWords = words.words;
+    });
   }
 
   convertDecimalDegree(String type) {
@@ -663,6 +678,30 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                   icon: Icon(Icons.content_copy),
                   iconSize: 18.0,
                   onPressed: () => copyFieldToClipboard(letterRefController),
+                ),
+              ],
+            ),
+
+            Padding(padding: EdgeInsets.only(bottom: 16.0)),
+
+            Row (
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Image.asset("assets/icons/w3wlogo.jpg"),
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      (threeWords == null) ? "No connection" : threeWords,
+                      style: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
