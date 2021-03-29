@@ -525,7 +525,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
             Row (
               children: [
-                Image.asset("assets/icons/w3wlogo.jpg"),
+                Image.asset("assets/icons/w3wlogo.jpg", scale: 3.0),
               ],
             ),
             Row (
