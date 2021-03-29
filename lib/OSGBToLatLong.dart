@@ -40,7 +40,6 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   var longDms;
 
   TextEditingController threeWordsController = TextEditingController();
-  //String threeWords = "";
 
   void clearField(TextEditingController field) {
     field.text = "";
@@ -66,7 +65,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
   void copyFieldToClipboard(TextEditingController field) {
     Clipboard.setData(new ClipboardData(text: field.text));
-    showSnackBar("Copied to clipbaord");
+    showSnackBar("Copied to clipboard");
   }
 
   void showSnackBar(String message) {
@@ -139,11 +138,11 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
   updateFields() {
     if (widget.settings["Lat/Long type"] == "Decimal") {
-      latController.text = (latDec == null) ? "" : "${latDec.toStringAsFixed(4)}";
-      longController.text = (longDec == null) ? "" : "${longDec.toStringAsFixed(4)}";
+      latController.text = "${latDec.toStringAsFixed(4)}";
+      longController.text = "${longDec.toStringAsFixed(4)}";
     } else {
-      latController.text = (latDec == null) ? "" : "${latDms[0]}° ${latDms[1]}' ${latDms[2].toStringAsFixed(4)}\"";
-      longController.text = (longDec == null) ? "" : "${longDms[0]}° ${longDms[1]}' ${longDms[2].toStringAsFixed(4)}\"";
+      latController.text = "${latDms[0]}° ${latDms[1]}' ${latDms[2].toStringAsFixed(4)}\"";
+      longController.text = "${longDms[0]}° ${longDms[1]}' ${longDms[2].toStringAsFixed(4)}\"";
     }
   }
 
