@@ -10,6 +10,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # 1.1.4 - migrated to null safety with Dart 1.12
 # 1.1.5 - fixed issue concerning fields not clearing properly when user switched lat and long format after conversion. changed from using snackbars to toasts when user copies a field.
 # 1.2.0 - added settings menu that allows users to change their desired lat/long and grid ref formats so the values will appear in this format whenever the app loads
+# 1.2.1 - changed grid reference input for numerical references to be separated by a space rather than a comma
 version: 1.2.0+2
 
 environment:

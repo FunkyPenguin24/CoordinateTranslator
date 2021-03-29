@@ -79,12 +79,12 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   }
 
   void updateFullRefText() {
-    numRefController.text = eastingController.text + "," + northingController.text;
+    numRefController.text = eastingController.text + " " + northingController.text;
   }
 
   void updateEastingNorthingText() {
-    if (numRefController.text.contains(",")) {
-      var eN = numRefController.text.split(",");
+    if (numRefController.text.contains(" ")) {
+      var eN = numRefController.text.split(" ");
       eastingController.text = eN[0];
       northingController.text = eN[1];
     } else {
@@ -387,7 +387,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                   }
                 },
                 decoration: InputDecoration(
-                  hintText: "460334,452192",
+                  hintText: "460334 452192",
                   suffixIcon: SizedBox(
                     width: 50,
                     child: IconButton(
