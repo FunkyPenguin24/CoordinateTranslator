@@ -188,9 +188,9 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
 
   Widget? getTabView(String tab) {
     switch (tab) {
-      case "Lat/Long to OSGB": return LatLongToOSGB(settings, setCurrentPlace); break;
-      case "OSGB to Lat/Long": return OSGBToLatLong(settings, setCurrentPlace); break;
-      default: return null; break;
+      case "Lat/Long to OSGB": return LatLongToOSGB(settings, setCurrentPlace);
+      case "OSGB to Lat/Long": return OSGBToLatLong(settings, setCurrentPlace);
+      default: return null;
     }
   }
 

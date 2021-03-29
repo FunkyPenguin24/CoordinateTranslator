@@ -212,6 +212,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttertoast:
+    dependency: "direct main"
+    description:
+      name: fluttertoast
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "8.0.3"
   glob:
     dependency: transitive
     description:
@@ -706,7 +713,7 @@ packages:
       name: what3words
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.3"
+    version: "3.0.4"
   win32:
     dependency: transitive
     description:

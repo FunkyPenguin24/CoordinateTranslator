@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 import 'package:what3words/what3words.dart' as w3w;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class OSGBToLatLong extends StatefulWidget {
 
@@ -34,10 +35,10 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   LatLongConverter converter = new LatLongConverter();
   bool letterPairInput = true;
 
-  double latDec = 0.0;
-  double longDec = 0.0;
-  var latDms;
-  var longDms;
+  double? latDec;
+  double? longDec;
+  dynamic? latDms;
+  dynamic? longDms;
 
   TextEditingController threeWordsController = TextEditingController();
 
@@ -51,25 +52,31 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   }
 
   void clearAllFields() {
-    latController.text = "";
-
-    longController.text = "";
-
     eastingController.text = "";
     northingController.text = "";
     numRefController.text = "";
     letterRefController.text = "";
 
     threeWordsController.text = "";
+
+    latDec = null;
+    longDec = null;
+    latDms = null;
+    longDms = null;
+    updateFields();
   }
 
   void copyFieldToClipboard(TextEditingController field) {
-    Clipboard.setData(new ClipboardData(text: field.text));
-    showSnackBar("Copied to clipboard");
+    if (field.text.isNotEmpty) {
+      Clipboard.setData(new ClipboardData(text: field.text));
+      showToast("Copied to clipboard");
+    } else {
+      showToast("Nothing to copy");
+    }
   }
 
-  void showSnackBar(String message) {
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
+  void showToast(String message) {
+    Fluttertoast.showToast(msg: message);
   }
 
   void updateFullRefText() {
@@ -138,11 +145,11 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
   updateFields() {
     if (widget.settings["Lat/Long type"] == "Decimal") {
-      latController.text = "${latDec.toStringAsFixed(4)}";
-      longController.text = "${longDec.toStringAsFixed(4)}";
+      latController.text = (latDec != null) ? "${latDec!.toStringAsFixed(4)}" : "";
+      longController.text = (longDec != null) ? "${longDec!.toStringAsFixed(4)}" : "";
     } else {
-      latController.text = "${latDms[0]}° ${latDms[1]}' ${latDms[2].toStringAsFixed(4)}\"";
-      longController.text = "${longDms[0]}° ${longDms[1]}' ${longDms[2].toStringAsFixed(4)}\"";
+      latController.text = (latDms != null) ? "${latDms[0]}° ${latDms[1]}' ${latDms[2].toStringAsFixed(4)}\"" : "";
+      longController.text = (longDms != null) ? "${longDms[0]}° ${longDms[1]}' ${longDms[2].toStringAsFixed(4)}\"" : "";
     }
   }
 
@@ -187,7 +194,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                         children: [
                           Expanded(
                             child: Text(
-                              "Switch to " + ((letterPairInput) ? "numerical" : "letter"),
+                              "Switch to " + ((letterPairInput) ? "numerical ref" : "letter ref"),
                             ),
                           ),
                           Icon(Icons.swap_horiz)

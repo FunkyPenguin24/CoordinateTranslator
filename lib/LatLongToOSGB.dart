@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 import 'package:what3words/what3words.dart' as w3w;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LatLongToOSGB extends StatefulWidget {
 
@@ -183,11 +184,11 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
 
   void copyFieldToClipboard(TextEditingController field) {
     Clipboard.setData(new ClipboardData(text: field.text));
-    showSnackBar("Copied to clipbaord");
+    showToast("Copied to clipboard");
   }
 
-  void showSnackBar(String message) {
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
+  void showToast(String message) {
+    Fluttertoast.showToast(msg: message);
   }
 
   void showErrorMessage(String ex) {
