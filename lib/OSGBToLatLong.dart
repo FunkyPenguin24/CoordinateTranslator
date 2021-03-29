@@ -1,3 +1,4 @@
+import 'package:coord_translator/settingsManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
@@ -6,10 +7,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class OSGBToLatLong extends StatefulWidget {
 
-  final Function(LatLong, OSRef) callback;
-  final Map<String, String> settings;
+  final SettingsManager sm;
 
-  OSGBToLatLong(this.settings, this.callback);
+  OSGBToLatLong(this.sm);
 
   OSGBToLatLongState createState() => OSGBToLatLongState();
 }
@@ -33,7 +33,6 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   TextEditingController longController = TextEditingController();
 
   LatLongConverter converter = new LatLongConverter();
-  bool letterPairInput = true;
 
   double? latDec;
   double? longDec;
@@ -99,7 +98,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
       try {
         LatLong result;
         OSRef os;
-        if (letterPairInput) { //if the user has selected to input the os reference in letter pair mode, use the letter pair textbox
+        if (widget.sm.settings["OS type"] == "Letter") { //if the user has selected to input the os reference in letter pair mode, use the letter pair textbox
           os = OSRef.fromLetterRef(letterRefController.text);
           result = converter.getLatLongFromOSGBLetterRef(os.letterRef);
         } else { //otherwise use the easting and northing text boxes
@@ -118,7 +117,6 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
         northingController.text = os.northing.toString();
         numRefController.text = os.numericalRef;
 
-        widget.callback(result, os);
         getWhatThreeWords(result);
         updateFields();
       } catch (ex) {
@@ -138,13 +136,14 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
   convertDecimalDegree(String type) {
     this.setState(() {
-      widget.settings["Lat/Long type"] = type;
+      widget.sm.settings["Lat/Long type"] = type;
+      widget.sm.saveSettings();
     });
     updateFields();
   }
 
   updateFields() {
-    if (widget.settings["Lat/Long type"] == "Decimal") {
+    if (widget.sm.settings["Lat/Long type"] == "Decimal") {
       latController.text = (latDec != null) ? "${latDec!.toStringAsFixed(4)}" : "";
       longController.text = (longDec != null) ? "${longDec!.toStringAsFixed(4)}" : "";
     } else {
@@ -176,7 +175,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
   @override
   Widget build(BuildContext context) {
-    String type = widget.settings["Lat/Long type"]!;
+    String type = widget.sm.settings["Lat/Long type"]!;
     return Form(
       key: _formKey,
       child: Padding(
@@ -194,7 +193,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                         children: [
                           Expanded(
                             child: Text(
-                              "Switch to " + ((letterPairInput) ? "numerical ref" : "letter ref"),
+                              "Switch to " + ((widget.sm.settings["OS type"] == "Letter") ? "numerical ref" : "letter ref"),
                             ),
                           ),
                           Icon(Icons.swap_horiz)
@@ -203,9 +202,16 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                     ),
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      this.setState(() {
-                        letterPairInput = !letterPairInput;
-                      });
+                      if (widget.sm.settings["OS type"] == "Letter") {
+                        setState(() {
+                          widget.sm.settings["OS type"] = "Numerical";
+                        });
+                      } else {
+                        setState(() {
+                          widget.sm.settings["OS type"] = "Letter";
+                        });
+                      }
+                      widget.sm.saveSettings();
                     },
                   ),
                 ),
@@ -218,7 +224,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                         children: [
                           Expanded(
                             child: Text(
-                              (widget.settings["Lat/Long type"] == "Decimal") ? "Switch to degrees" : "Switch to decimal",
+                              (widget.sm.settings["Lat/Long type"] == "Decimal") ? "Switch to degrees" : "Switch to decimal",
                             ),
                           ),
                           Expanded(child: Icon(Icons.swap_horiz),),
@@ -227,7 +233,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                     ),
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (widget.settings["Lat/Long type"] == "Decimal") {
+                      if (widget.sm.settings["Lat/Long type"] == "Decimal") {
                         convertDecimalDegree("Degrees");
                       } else {
                         convertDecimalDegree("Decimal");
@@ -241,7 +247,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
             Padding(padding: EdgeInsets.only(bottom: 16.0)),
 
             Visibility(
-              visible: !letterPairInput,
+              visible: !(widget.sm.settings["OS type"] == "Letter"),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 child: Row(
@@ -341,12 +347,12 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
             ),
 
             Visibility(
-              visible: !letterPairInput,
+              visible: !(widget.sm.settings["OS type"] == "Letter"),
               child: Padding(padding: EdgeInsets.only(bottom: 16.0)),
             ),
 
             Visibility(
-              visible: !letterPairInput,
+              visible: !(widget.sm.settings["OS type"] == "Letter"),
               child: Row(
                 children: [
                   Text(
@@ -359,11 +365,11 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
               ),
             ),
             Visibility(
-              visible: !letterPairInput,
+              visible: !(widget.sm.settings["OS type"] == "Letter"),
               child: TextFormField(
                 controller: numRefController,
                 focusNode: numRefFocus,
-                enabled: !letterPairInput,
+                //enabled: !(widget.sm.settings["OS type"] == "Letter"),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -395,7 +401,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
             ),
 
             Visibility(
-              visible: letterPairInput,
+              visible: widget.sm.settings["OS type"] == "Letter",
               child: Row(
                 children: [
                   Text(
@@ -408,10 +414,10 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
               ),
             ),
             Visibility(
-              visible: letterPairInput,
+              visible: widget.sm.settings["OS type"] == "Letter",
               child: TextFormField(
                 controller: letterRefController,
-                enabled: letterPairInput,
+                //enabled: widget.sm.settings["OS type"] == "Letter",
                 validator: (value) {
                   if (value!.isEmpty) {
                     return "Enter a valid reference!";

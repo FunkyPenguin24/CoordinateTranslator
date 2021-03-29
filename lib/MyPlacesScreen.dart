@@ -4,7 +4,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'PlaceDetailScreen.dart';
 import 'Places.dart';
 
-import 'SideDrawer.dart';
+import 'SettingsDrawer.dart';
 
 class MyPlacesScreen extends StatefulWidget {
   MyPlacesScreenState createState() => MyPlacesScreenState();
@@ -27,7 +27,7 @@ class MyPlacesScreenState extends State<MyPlacesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideDrawer(widget),
+      //drawer: SideDrawer(widget),
       appBar: AppBar(
         centerTitle: true,
         title: Text(

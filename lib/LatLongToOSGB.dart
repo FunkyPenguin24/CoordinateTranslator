@@ -1,3 +1,4 @@
+import 'package:coord_translator/settingsManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart';
@@ -7,9 +8,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class LatLongToOSGB extends StatefulWidget {
 
-  final Function(LatLong, OSRef) callback;
-  final Map<String, String> settings;
-  LatLongToOSGB(this.settings, this.callback);
+  final SettingsManager sm;
+  LatLongToOSGB(this.sm);
 
   LatLongToOSGBState createState() => LatLongToOSGBState();
 }
@@ -48,7 +48,6 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
   LatLongConverter converter = new LatLongConverter();
 
   TextEditingController threeWordsController = TextEditingController();
-  //String threeWords = "";
 
   void locate() async {
     Location location = new Location();
@@ -98,7 +97,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
       }
       LatLong latLong;
       OSRef result; //result will be osref
-      if (widget.settings["Lat/Long type"] == "Decimal") {
+      if (widget.sm.settings["Lat/Long type"] == "Decimal") {
         result = converter.getOSGBfromDec(double.parse(latController.text), double.parse(longController.text));
         latLong = new LatLong(double.parse(latController.text), double.parse(longController.text), 0, Datums.WGS84);
       } else {
@@ -116,7 +115,6 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
       northingController.text =  northing;
       numRefController.text = numRef;
       letterRefController.text = letterRef;
-      widget.callback(latLong, result);
       getWhatThreeWords(latLong);
     }
   }
@@ -154,9 +152,10 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
         longSecController.text = "${degrees[2]}";
       }
     }
-    this.setState(() {
-      widget.settings["Lat/Long type"] = type;
+    setState(() {
+      widget.sm.settings["Lat/Long type"] = type;
     });
+    widget.sm.saveSettings();
   }
 
   void clearField(TextEditingController field) {
@@ -183,8 +182,12 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
   }
 
   void copyFieldToClipboard(TextEditingController field) {
-    Clipboard.setData(new ClipboardData(text: field.text));
-    showToast("Copied to clipboard");
+    if (field.text.isNotEmpty) {
+      Clipboard.setData(new ClipboardData(text: field.text));
+      showToast("Copied to clipboard");
+    } else {
+      showToast("Nothing to copy");
+    }
   }
 
   void showToast(String message) {
@@ -220,7 +223,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
 
   @override
   Widget build(BuildContext context) {
-    String type = widget.settings["Lat/Long type"]!;
+    String type = widget.sm.settings["Lat/Long type"]!;
     return Form(
       key: _formKey,
       child: Padding(
@@ -260,7 +263,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                         children: [
                           Expanded(
                             child: Text(
-                              (widget.settings["Lat/Long type"] == "Decimal") ? "Switch to degrees" : "Switch to decimal",
+                              (widget.sm.settings["Lat/Long type"] == "Decimal") ? "Switch to degrees" : "Switch to decimal",
                             ),
                           ),
                           Expanded(child: Icon(Icons.swap_horiz),),
@@ -269,7 +272,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                     ),
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (widget.settings["Lat/Long type"] == "Decimal") {
+                      if (widget.sm.settings["Lat/Long type"] == "Decimal") {
                         convertDecimalDegree("Degrees");
                       } else {
                         convertDecimalDegree("Decimal");
@@ -285,7 +288,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
             Row(
               children: [
                 Text(
-                  "Latitude (${widget.settings["Lat/Long type"]}) N",
+                  "Latitude (${widget.sm.settings["Lat/Long type"]}) N",
                   style: TextStyle(
                     fontSize: 20.0,
                   ),
@@ -403,7 +406,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
             Row(
               children: [
                 Text(
-                  "Longitude (${widget.settings["Lat/Long type"]}) E",
+                  "Longitude (${widget.sm.settings["Lat/Long type"]}) E",
                   style: TextStyle(
                     fontSize: 20.0,
                   ),

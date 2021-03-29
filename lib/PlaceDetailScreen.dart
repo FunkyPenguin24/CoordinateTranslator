@@ -6,7 +6,7 @@ import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'Places.dart';
-import 'SideDrawer.dart';
+import 'SettingsDrawer.dart';
 
 class PlaceDetailScreen extends StatefulWidget {
 
@@ -133,7 +133,7 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideDrawer(widget),
+      //drawer: SideDrawer(widget),
       appBar: AppBar(
         title: Text(widget.place.name),
         leading: TextButton(
