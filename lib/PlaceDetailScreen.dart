@@ -21,16 +21,16 @@ class PlaceDetailScreen extends StatefulWidget {
 class PlaceDetailScreenState extends State<PlaceDetailScreen> {
   PlaceManager pm = new PlaceManager();
   bool editing = false;
-  File placeImage;
-  List<dynamic> latDms;
-  List<dynamic> lonDms;
+  late File placeImage;
+  late List<dynamic> latDms;
+  late List<dynamic> lonDms;
 
   @override
   initState() {
     super.initState();
     latDms = LatLongConverter().getDegreeFromDecimal(widget.place.latLong.getLat());
     lonDms = LatLongConverter().getDegreeFromDecimal(widget.place.latLong.getLon());
-    if (widget.place.imagePath != "" || widget.place.imagePath != null)
+    if (widget.place.imagePath != "")
       loadPlaceImage();
     loadPlaces();
   }
@@ -57,7 +57,7 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
       final saveDir = await getApplicationDocumentsDirectory();
       String fileName = path.basename(img.path);
       String savePath = "${saveDir.path}/$fileName}";
-      final savedImg = await img.copy(savePath);
+      await img.copy(savePath);
       pm.saveFavPlaces();
     }
   }
@@ -75,7 +75,7 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
           title: Text("Confirm deletion"),
           content: Text("Are you sure you would like to delete the place " + widget.place.name + "?"),
           actions: [
-            FlatButton(
+            TextButton(
               child: Text("Confirm"),
               onPressed: () async {
                 pm.removeFavPlace(widget.place);
@@ -84,7 +84,7 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
                 Navigator.pop(context, "refresh");
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text("Cancel"),
               onPressed: () {
                 Navigator.pop(context);
@@ -104,21 +104,21 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
         return AlertDialog(
           title: Text("Change photo"),
           actions: [
-            FlatButton(
+            TextButton(
               child: Text("Choose new picture from gallery"),
               onPressed: () {
                 getImage("gallery");
                 Navigator.pop(context);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text("Take new picture"),
               onPressed: () {
                 getImage("camera");
                 Navigator.pop(context);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text("Cancel"),
               onPressed: () {
                 Navigator.pop(context);
@@ -136,7 +136,7 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
       drawer: SideDrawer(widget),
       appBar: AppBar(
         title: Text(widget.place.name),
-        leading: FlatButton(
+        leading: TextButton(
           child: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
@@ -258,7 +258,7 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
                 ),
                 Padding(padding: EdgeInsets.only(top: 10.0)),
 
-                (widget.place.imagePath == "" || widget.place.imagePath == null) ?
+                (widget.place.imagePath == "") ?
                     Container(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -278,7 +278,7 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(right: 10.0),
-                                child: RaisedButton(
+                                child: ElevatedButton(
                                   child: Icon(Icons.camera_alt),
                                   onPressed: () {
                                     getImage("camera");
@@ -287,7 +287,7 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
                               ),
                               Padding(
                                 padding: EdgeInsets.only(right: 10.0),
-                                child: RaisedButton(
+                                child: ElevatedButton(
                                   child: Icon(Icons.photo),
                                   onPressed: () {
                                     getImage("gallery");
@@ -322,9 +322,9 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
               padding: EdgeInsets.only(bottom: 15.0, right: 15.0),
               width: 210,
               child: ButtonTheme(
-                child: RaisedButton(
-                  textColor: Colors.white,
-                  color: Colors.blue,
+                child: ElevatedButton(
+                  // textColor: Colors.white,
+                  // color: Colors.blue,
                   child: Row(
                     children: [
                       Text("Open in Google Maps"),

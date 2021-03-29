@@ -14,7 +14,7 @@ class MyPlacesScreenState extends State<MyPlacesScreen> {
 
   RefreshController _refreshController = RefreshController(initialRefresh: true);
   PlaceManager pm = new PlaceManager();
-  List<Place> favPlaces = new List();
+  List<Place> favPlaces = [];
 
   refreshList() async {
     await pm.loadFavPlaces();
@@ -45,7 +45,7 @@ class MyPlacesScreenState extends State<MyPlacesScreen> {
   }
 
   Widget getFavWidgets() {
-    List<Widget> widgetList = new List<Widget>();
+    List<Widget> widgetList = [];
 
     for (Place p in favPlaces) {
       List<dynamic> latDms = LatLongConverter().getDegreeFromDecimal(p.latLong.getLat());

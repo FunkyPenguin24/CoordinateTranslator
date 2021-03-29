@@ -6,7 +6,7 @@ import 'dart:convert' as convert;
 
 class PlaceManager {
 
-  List<Place> favPlaces = new List();
+  List<Place> favPlaces = [];
 
   void addFavPlace(Place p) {
     favPlaces.add(p);
@@ -28,7 +28,7 @@ class PlaceManager {
     String rawPlaces = await file.readAsString();
     if (rawPlaces != "" && rawPlaces != null) {
       List<dynamic> tempPlaces = convert.jsonDecode(rawPlaces);
-      List<Place> tempList = List<Place>();
+      List<Place> tempList = [];
       for (int i = 0; i < tempPlaces.length; i++) {
         Place p = Place.fromJson(tempPlaces[i]);
         tempList.add(p);

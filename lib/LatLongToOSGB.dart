@@ -6,8 +6,8 @@ import 'package:what3words/what3words.dart' as w3w;
 
 class LatLongToOSGB extends StatefulWidget {
 
-  Function(LatLong, OSRef) callback;
-  Map<String, String> settings;
+  final Function(LatLong, OSRef) callback;
+  final Map<String, String> settings;
   LatLongToOSGB(this.settings, this.callback);
 
   LatLongToOSGBState createState() => LatLongToOSGBState();
@@ -46,7 +46,8 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
 
   LatLongConverter converter = new LatLongConverter();
 
-  String threeWords = "";
+  TextEditingController threeWordsController = TextEditingController();
+  //String threeWords = "";
 
   void locate() async {
     Location location = new Location();
@@ -70,8 +71,8 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
     }
 
     LocationData currentPos = await location.getLocation();
-    double latitude = currentPos.latitude;
-    double longitude = currentPos.longitude;
+    double latitude = currentPos.latitude!;
+    double longitude = currentPos.longitude!;
 
     latController.text = "$latitude";
     longController.text = "$longitude";
@@ -88,7 +89,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
   }
 
   void convert() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       try {
       } catch (ex) {
         showErrorMessage(ex.toString());
@@ -125,9 +126,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
     .convertTo3wa(w3w.Coordinates(latLong.lat, latLong.long))
     .language('en')
     .execute();
-    this.setState(() {
-      threeWords = words.words;
-    });
+    threeWordsController.text = words.words ?? "No connection";
   }
 
   convertDecimalDegree(String type) {
@@ -178,6 +177,8 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
     northingController.text = "";
     numRefController.text = "";
     letterRefController.text = "";
+
+    threeWordsController.text = "";
   }
 
   void copyFieldToClipboard(TextEditingController field) {
@@ -198,7 +199,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
           title: Text("Error"),
           content: Text(ex),
           actions: [
-            FlatButton(
+            TextButton(
               child: Text("Close"),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -218,7 +219,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
 
   @override
   Widget build(BuildContext context) {
-    String type = widget.settings["Lat/Long type"];
+    String type = widget.settings["Lat/Long type"]!;
     return Form(
       key: _formKey,
       child: Padding(
@@ -229,7 +230,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     child: Padding(
                       padding: EdgeInsets.all(5.0),
                       child: Row(
@@ -251,7 +252,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                 ),
                 Padding(padding: EdgeInsets.only(right: 16.0)),
                 Expanded(
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     child: Padding(
                       padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
                       child: Row(
@@ -296,7 +297,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
               focusNode: latFocus,
               keyboardType: TextInputType.number,
               validator: (value) {
-                if (value.isEmpty) {
+                if (value!.isEmpty) {
                   return "Enter a valid Latitude!";
                 }
                 return null;
@@ -323,7 +324,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                   focusNode: latDegFocus,
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Enter valid degrees!";
                     }
                     return null;
@@ -348,7 +349,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                   focusNode: latMinFocus,
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Enter valid minutes!";
                     }
                     return null;
@@ -373,7 +374,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                   focusNode: latSecFocus,
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Enter valid seconds!";
                     }
                     return null;
@@ -414,7 +415,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
               focusNode: longFocus,
               keyboardType: TextInputType.number,
               validator: (value) {
-                if (value.isEmpty) {
+                if (value!.isEmpty) {
                   return "Enter a valid Longitude!";
                 }
                 return null;
@@ -442,7 +443,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                   focusNode: longDegFocus,
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Enter valid degrees!";
                     }
                     return null;
@@ -467,7 +468,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                   focusNode: longMinFocus,
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Enter valid minutes!";
                     }
                     return null;
@@ -492,7 +493,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                   focusNode: longSecFocus,
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Enter valid seconds!";
                     }
                     return null;
@@ -522,7 +523,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     child: Text(
                       "Convert",
                     ),
@@ -534,7 +535,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                 ),
                 Padding(padding: EdgeInsets.only(right: 16.0)),
                 Expanded(
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     child: Text(
                       "Clear all",
                     ),
@@ -686,24 +687,26 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
 
             Row (
               children: [
+                Image.asset("assets/icons/w3wlogo.jpg"),
+              ],
+            ),
+            Row (
+              children: [
                 Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Image.asset("assets/icons/w3wlogo.jpg"),
-                  ),
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      (threeWords == null) ? "No connection" : threeWords,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                      ),
+                  child: TextFormField(
+                    controller: threeWordsController,
+                    enabled: false,
+                    decoration: InputDecoration(
+                      hintText: "what.three.words",
                     ),
                   ),
                 ),
-              ],
+                IconButton(
+                  icon: Icon(Icons.content_copy),
+                  iconSize: 18.0,
+                  onPressed: () => copyFieldToClipboard(threeWordsController),
+                ),
+              ]
             ),
           ],
         ),

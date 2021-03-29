@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 import 'Places.dart';
-import 'SideDrawer.dart';
+//import 'SideDrawer.dart';
 import 'LatLongToOSGB.dart';
 import 'OSGBToLatLong.dart';
 
@@ -15,8 +15,8 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
   final tabs = ["Lat/Long to OSGB", "OSGB to Lat/Long"];
   GlobalKey<FormState> _formKey = new GlobalKey();
   PlaceManager pm = new PlaceManager();
-  Place currPlace;
-  TabController tabControl;
+  late Place currPlace;
+  late TabController tabControl;
 
   Map<String, String> settings = {
     "Lat/Long type":"Decimal"
@@ -68,7 +68,7 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
                   ),
                   controller: nameControl,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Please enter a valid name";
                     }
                     return null;
@@ -88,10 +88,10 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
             ),
           ),
           actions: [
-            FlatButton(
+            TextButton(
               child: Text("Add"),
               onPressed: () {
-                if (_formKey.currentState.validate()) {
+                if (_formKey.currentState!.validate()) {
                   if (descControl.text.isEmpty) {
                     addCurrToFav(nameControl.text, "");
                   } else {
@@ -101,7 +101,7 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
                 }
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text("Cancel"),
               onPressed: () {
                 Navigator.pop(context);
@@ -122,7 +122,7 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
           title: Text("Error!"),
           content: Text("You must first complete a conversion before you can favourite a place"),
           actions: [
-            FlatButton(
+            TextButton(
               child: Text("OK"),
               onPressed: () {
                 Navigator.pop(context);
@@ -186,10 +186,11 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
     );
   }
 
-  Widget getTabView(String tab) {
+  Widget? getTabView(String tab) {
     switch (tab) {
       case "Lat/Long to OSGB": return LatLongToOSGB(settings, setCurrentPlace); break;
       case "OSGB to Lat/Long": return OSGBToLatLong(settings, setCurrentPlace); break;
+      default: return null; break;
     }
   }
 

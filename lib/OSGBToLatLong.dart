@@ -5,8 +5,8 @@ import 'package:what3words/what3words.dart' as w3w;
 
 class OSGBToLatLong extends StatefulWidget {
 
-  Function(LatLong, OSRef) callback;
-  Map<String, String> settings;
+  final Function(LatLong, OSRef) callback;
+  final Map<String, String> settings;
 
   OSGBToLatLong(this.settings, this.callback);
 
@@ -34,12 +34,13 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   LatLongConverter converter = new LatLongConverter();
   bool letterPairInput = true;
 
-  double latDec;
-  double longDec;
+  double latDec = 0.0;
+  double longDec = 0.0;
   var latDms;
   var longDms;
 
-  String threeWords = "";
+  TextEditingController threeWordsController = TextEditingController();
+  //String threeWords = "";
 
   void clearField(TextEditingController field) {
     field.text = "";
@@ -59,6 +60,8 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
     northingController.text = "";
     numRefController.text = "";
     letterRefController.text = "";
+
+    threeWordsController.text = "";
   }
 
   void copyFieldToClipboard(TextEditingController field) {
@@ -86,7 +89,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   }
 
   void convert() {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       try {
         LatLong result;
         OSRef os;
@@ -124,9 +127,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
         .convertTo3wa(w3w.Coordinates(latLong.lat, latLong.long))
         .language('en')
         .execute();
-    this.setState(() {
-      threeWords = words.words;
-    });
+    threeWordsController.text = words.words ?? "No connection";
   }
 
   convertDecimalDegree(String type) {
@@ -155,7 +156,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
           title: Text("Error"),
           content: Text(ex),
           actions: [
-            FlatButton(
+            TextButton(
               child: Text("Close"),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -169,7 +170,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
   @override
   Widget build(BuildContext context) {
-    String type = widget.settings["Lat/Long type"];
+    String type = widget.settings["Lat/Long type"]!;
     return Form(
       key: _formKey,
       child: Padding(
@@ -180,7 +181,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     child: Padding(
                       padding: EdgeInsets.all(5.0),
                       child: Row(
@@ -204,7 +205,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                 ),
                 Padding(padding: EdgeInsets.only(right: 16.0)),
                 Expanded(
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     child: Padding(
                       padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
                       child: Row(
@@ -254,7 +255,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                             focusNode: eastingFocus,
                             keyboardType: TextInputType.number,
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return "Enter a valid Easting!";
                               }
                               return null;
@@ -299,7 +300,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                             focusNode: northingFocus,
                             keyboardType: TextInputType.number,
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return "Enter a valid Northing!";
                               }
                               return null;
@@ -359,7 +360,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                 enabled: !letterPairInput,
                 keyboardType: TextInputType.number,
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value!.isEmpty) {
                     return "Enter a valid reference!";
                   }
                   return null;
@@ -406,7 +407,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                 controller: letterRefController,
                 enabled: letterPairInput,
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value!.isEmpty) {
                     return "Enter a valid reference!";
                   }
                   return null;
@@ -434,7 +435,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     child: Text(
                       "Convert",
                     ),
@@ -446,7 +447,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                 ),
                 Padding(padding: EdgeInsets.only(right: 10.0)),
                 Expanded(
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     child: Text(
                       "Clear all",
                     ),
@@ -525,24 +526,26 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
             Row (
               children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Image.asset("assets/icons/w3wlogo.jpg"),
-                  ),
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      (threeWords == null) ? "No connection" : threeWords,
-                      style: TextStyle(
-                        fontSize: 20.0,
+                Image.asset("assets/icons/w3wlogo.jpg"),
+              ],
+            ),
+            Row (
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: threeWordsController,
+                      enabled: false,
+                      decoration: InputDecoration(
+                        hintText: "what.three.words",
                       ),
                     ),
                   ),
-                ),
-              ],
+                  IconButton(
+                    icon: Icon(Icons.content_copy),
+                    iconSize: 18.0,
+                    onPressed: () => copyFieldToClipboard(threeWordsController),
+                  ),
+                ]
             ),
           ],
         ),
