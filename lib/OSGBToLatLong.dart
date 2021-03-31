@@ -109,8 +109,8 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
         latDec = result.lat;
         longDec = result.long;
 
-        latDms = converter.getDegreeFromDecimal(latDec);
-        longDms = converter.getDegreeFromDecimal(longDec);
+        latDms = converter.getDegreeFromDecimal(latDec!);
+        longDms = converter.getDegreeFromDecimal(longDec!);
 
         letterRefController.text = os.letterRef;
         eastingController.text = os.easting.toString();
