@@ -12,7 +12,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # 1.2.0 - added settings menu that allows users to change their desired lat/long and grid ref formats so the values will appear in this format whenever the app loads
 # 1.2.1 - changed grid reference input for numerical references to be separated by a space rather than a comma
 # 1.2.2 - fixed issue with what3words section not working on release
-version: 1.2.2+2
+# 1.2.3 - updated what3words logo and removed lines under output values
+version: 1.2.3+3
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

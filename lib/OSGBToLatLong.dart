@@ -492,6 +492,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                     enabled: false,
                     decoration: InputDecoration(
                       hintText: "Latitude",
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
@@ -523,6 +524,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                     enabled: false,
                     decoration: InputDecoration(
                       hintText: "Longitude",
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
@@ -536,19 +538,25 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
             Padding(padding: EdgeInsets.only(bottom: 16.0)),
 
-            Row (
-              children: [
-                Image.asset("assets/icons/w3wlogo.jpg", scale: 3.0),
-              ],
-            ),
-            Row (
+            Row(
                 children: [
+                  Text(
+                    "///",
+                    style: TextStyle(
+                      color: Color.fromRGBO(225, 31, 38, 1),
+                      fontSize: 20.0,
+                    ),
+                  ),
                   Expanded(
                     child: TextFormField(
                       controller: threeWordsController,
                       enabled: false,
+                      style: TextStyle(
+                        fontSize: 20.0,
+                      ),
                       decoration: InputDecoration(
                         hintText: "what.three.words",
+                        border: InputBorder.none,
                       ),
                     ),
                   ),

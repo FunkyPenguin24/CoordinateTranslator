@@ -576,6 +576,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                                 enabled: false,
                                 decoration: InputDecoration(
                                   hintText: "460334",
+                                  border: InputBorder.none,
                                 ),
                               ),
                             ),
@@ -608,6 +609,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                                 enabled: false,
                                 decoration: InputDecoration(
                                   hintText: "452192",
+                                  border: InputBorder.none,
                                 ),
                               ),
                             ),
@@ -645,6 +647,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                     enabled: false,
                     decoration: InputDecoration(
                       hintText: "460334 452192",
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
@@ -676,6 +679,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                     enabled: false,
                     decoration: InputDecoration(
                       hintText: "SE 60334 52192",
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
@@ -689,19 +693,25 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
 
             Padding(padding: EdgeInsets.only(bottom: 16.0)),
 
-            Row (
+            Row(
               children: [
-                Image.asset("assets/icons/w3wlogo.jpg", scale: 3),
-              ],
-            ),
-            Row (
-              children: [
+                Text(
+                  "///",
+                  style: TextStyle(
+                    color: Color.fromRGBO(225, 31, 38, 1),
+                    fontSize: 20.0,
+                  ),
+                ),
                 Expanded(
                   child: TextFormField(
                     controller: threeWordsController,
                     enabled: false,
+                    style: TextStyle(
+                      fontSize: 20.0,
+                    ),
                     decoration: InputDecoration(
                       hintText: "what.three.words",
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
