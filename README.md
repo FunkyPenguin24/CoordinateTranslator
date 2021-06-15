@@ -7,7 +7,7 @@ A flutter application for converting coordinates from Lat/Long to OSGB36 grid re
 ## Building the project
 
 This repository is a flutter project, not a built app, so you can clone it and edit the project however you want. 
-The build is available under the release section of the repository in the form of an APK for Android devices; unforuntately I haven't got any experience with iOS devices so there isn't a build for it. If you would like the build on an iOS device then you will have to clone the repository and build it yourself.
+The build is available under the release section of the repository in the form of an APK for Android devices; unfortunately I haven't got any experience with iOS devices so there isn't a build for it. If you would like the build on an iOS device then you will have to clone the repository and build it yourself.
 
 ## Translating coordinates
 

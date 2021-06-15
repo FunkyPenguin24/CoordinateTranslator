@@ -5,6 +5,7 @@ import 'package:location/location.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 import 'package:what3words/what3words.dart' as w3w;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'What3WordsWrapper.dart';
 
 class LatLongToOSGB extends StatefulWidget {
 
@@ -115,17 +116,18 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
       northingController.text =  northing;
       numRefController.text = numRef;
       letterRefController.text = letterRef;
-      getWhatThreeWords(latLong);
+      if (widget.sm.settings["What3Words"])
+        getWhatThreeWords(latLong);
     }
   }
 
   void getWhatThreeWords(LatLong latLong) async {
-    var api = w3w.What3WordsV3('ST2KVDLN');
+    var api = w3w.What3WordsV3(TOKEN);
     var words = await api
-    .convertTo3wa(w3w.Coordinates(latLong.lat, latLong.long))
-    .language('en')
-    .execute();
-    threeWordsController.text = words.words ?? "No connection";
+      .convertTo3wa(w3w.Coordinates(latLong.lat, latLong.long))
+      .language('en')
+      .execute();
+    threeWordsController.text = words.data()?.words ?? "No connection";
   }
 
   convertDecimalDegree(String type) {
@@ -550,178 +552,198 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                   ),
                 ),
               ],
-            ),
+            ), //buttons
 
-            Padding(padding: EdgeInsets.only(bottom: 16.0)),
-
-            Container(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Easting",
-                          style: TextStyle(
-                            fontSize: 20.0,
+            Visibility(
+              visible: widget.sm.settings["EastingNorthing"],
+              child: Container(
+                padding: EdgeInsets.only(top: 16.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Easting",
+                            style: TextStyle(
+                              fontSize: 20.0,
+                            ),
                           ),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: eastingController,
-                                enabled: false,
-                                decoration: InputDecoration(
-                                  hintText: "460334",
-                                  border: InputBorder.none,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: eastingController,
+                                  enabled: false,
+                                  decoration: InputDecoration(
+                                    hintText: "460334",
+                                    border: InputBorder.none,
+                                  ),
                                 ),
                               ),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.content_copy),
-                              iconSize: 18.0,
-                              onPressed: () => copyFieldToClipboard(eastingController),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.only(right: 5.0)),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Northing",
-                          style: TextStyle(
-                            fontSize: 20.0,
+                              IconButton(
+                                icon: Icon(Icons.content_copy),
+                                iconSize: 18.0,
+                                onPressed: () => copyFieldToClipboard(eastingController),
+                              ),
+                            ],
                           ),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                controller: northingController,
-                                enabled: false,
-                                decoration: InputDecoration(
-                                  hintText: "452192",
-                                  border: InputBorder.none,
+                        ],
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(right: 5.0)),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Northing",
+                            style: TextStyle(
+                              fontSize: 20.0,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: northingController,
+                                  enabled: false,
+                                  decoration: InputDecoration(
+                                    hintText: "452192",
+                                    border: InputBorder.none,
+                                  ),
                                 ),
                               ),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.content_copy),
-                              iconSize: 18.0,
-                              onPressed: () => copyFieldToClipboard(northingController),
-                            ),
-                          ],
-                        ),
-                      ],
+                              IconButton(
+                                icon: Icon(Icons.content_copy),
+                                iconSize: 18.0,
+                                onPressed: () => copyFieldToClipboard(northingController),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            ) ,//easting northing
 
-            Padding(padding: EdgeInsets.only(bottom: 16.0)),
-
-            Row(
-              children: [
-                Text(
-                  "Full numerical reference",
-                  style: TextStyle(
-                    fontSize: 20.0,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: numRefController,
-                    enabled: false,
-                    decoration: InputDecoration(
-                      hintText: "460334 452192",
-                      border: InputBorder.none,
+            Visibility(
+              visible: widget.sm.settings["Numerical"],
+              child: Container(
+                padding: EdgeInsets.only(top: 16.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Full numerical reference",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.content_copy),
-                  iconSize: 18.0,
-                  onPressed: () => copyFieldToClipboard(numRefController),
-                ),
-              ],
-            ),
-
-            Padding(padding: EdgeInsets.only(bottom: 16.0)),
-
-            Row(
-              children: [
-                Text(
-                  "Full letter reference",
-                  style: TextStyle(
-                    fontSize: 20.0,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: letterRefController,
-                    enabled: false,
-                    decoration: InputDecoration(
-                      hintText: "SE 60334 52192",
-                      border: InputBorder.none,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: numRefController,
+                            enabled: false,
+                            decoration: InputDecoration(
+                              hintText: "460334 452192",
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.content_copy),
+                          iconSize: 18.0,
+                          onPressed: () => copyFieldToClipboard(numRefController),
+                        ),
+                      ],
                     ),
-                  ),
+                  ],
                 ),
-                IconButton(
-                  icon: Icon(Icons.content_copy),
-                  iconSize: 18.0,
-                  onPressed: () => copyFieldToClipboard(letterRefController),
-                ),
-              ],
-            ),
+              ),
+            ), //numerical ref
 
-            Padding(padding: EdgeInsets.only(bottom: 16.0)),
+            Visibility(
+              visible: widget.sm.settings["Letter"],
+              child: Container(
+                  padding: EdgeInsets.only(top: 16.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "Full letter reference",
+                            style: TextStyle(
+                              fontSize: 20.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: letterRefController,
+                              enabled: false,
+                              decoration: InputDecoration(
+                                hintText: "SE 60334 52192",
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.content_copy),
+                            iconSize: 18.0,
+                            onPressed: () => copyFieldToClipboard(letterRefController),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+              ),
+            ), //letter ref
 
-            Row(
-              children: [
-                Text(
-                  "///",
-                  style: TextStyle(
-                    color: Color.fromRGBO(225, 31, 38, 1),
-                    fontSize: 20.0,
-                  ),
-                ),
-                Expanded(
-                  child: TextFormField(
-                    controller: threeWordsController,
-                    enabled: false,
-                    style: TextStyle(
-                      fontSize: 20.0,
+            Visibility(
+              visible: widget.sm.settings["What3Words"],
+              child: Container(
+                child: Row(
+                  children: [
+                    Text(
+                      "///",
+                      style: TextStyle(
+                        color: Color.fromRGBO(225, 31, 38, 1),
+                        fontSize: 20.0,
+                      ),
                     ),
-                    decoration: InputDecoration(
-                      hintText: "what.three.words",
-                      border: InputBorder.none,
+                    Expanded(
+                      child: TextFormField(
+                        controller: threeWordsController,
+                        enabled: false,
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: "what.three.words",
+                          border: InputBorder.none,
+                        ),
+                      ),
                     ),
-                  ),
+                    IconButton(
+                      icon: Icon(Icons.content_copy),
+                      iconSize: 18.0,
+                      onPressed: () => copyFieldToClipboard(threeWordsController),
+                    ),
+                  ]
                 ),
-                IconButton(
-                  icon: Icon(Icons.content_copy),
-                  iconSize: 18.0,
-                  onPressed: () => copyFieldToClipboard(threeWordsController),
-                ),
-              ]
-            ),
+              )
+            ), //w3w
           ],
         ),
       ),

@@ -18,18 +18,19 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
 
   @override
   initState() {
-    super.initState();
     loadSettings();
     tabControl = new TabController(vsync: this, length: 2);
     tabControl.addListener(() {
       FocusScope.of(context).unfocus();
     });
+    super.initState();
   }
 
   loadSettings() async {
     await sm.checkForFile();
+    await sm.loadSettings();
     this.setState(() {
-      sm.loadSettings();
+      sm.settings = sm.settings;
     });
   }
 
@@ -40,7 +41,7 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
         child: Scaffold(
           key: _scaffoldKey,
           resizeToAvoidBottomInset: true,
-          endDrawer: SettingsDrawer(sm),
+          endDrawer: SettingsDrawer(sm, this),
           endDrawerEnableOpenDragGesture: false,
           appBar: AppBar(
             centerTitle: true,

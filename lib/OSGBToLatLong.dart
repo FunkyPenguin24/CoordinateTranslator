@@ -1,3 +1,4 @@
+import 'package:coord_translator/What3WordsWrapper.dart';
 import 'package:coord_translator/settingsManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -117,7 +118,8 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
         northingController.text = os.northing.toString();
         numRefController.text = os.numericalRef;
 
-        getWhatThreeWords(result);
+        if (widget.sm.settings["What3Words"])
+          getWhatThreeWords(result);
         updateFields();
       } catch (ex) {
         showErrorMessage(ex.toString());
@@ -126,24 +128,24 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   }
 
   void getWhatThreeWords(LatLong latLong) async {
-    var api = w3w.What3WordsV3('ST2KVDLN');
+    var api = w3w.What3WordsV3(TOKEN);
     var words = await api
-        .convertTo3wa(w3w.Coordinates(latLong.lat, latLong.long))
-        .language('en')
-        .execute();
-    threeWordsController.text = words.words ?? "No connection";
+      .convertTo3wa(w3w.Coordinates(latLong.lat, latLong.long))
+      .language('en')
+      .execute();
+    threeWordsController.text = words.data()?.words ?? "No connection";
   }
 
   convertDecimalDegree(String type) {
     this.setState(() {
-      widget.sm.settings["Lat/Long type"] = type;
+      widget.sm.settings["Lat/Long output"] = type;
       widget.sm.saveSettings();
     });
     updateFields();
   }
 
   updateFields() {
-    if (widget.sm.settings["Lat/Long type"] == "Decimal") {
+    if (widget.sm.settings["Lat/Long output"] == "Decimal") {
       latController.text = (latDec != null) ? "${latDec!.toStringAsFixed(4)}" : "";
       longController.text = (longDec != null) ? "${longDec!.toStringAsFixed(4)}" : "";
     } else {
@@ -175,7 +177,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
   @override
   Widget build(BuildContext context) {
-    String type = widget.sm.settings["Lat/Long type"]!;
+    String type = widget.sm.settings["Lat/Long output"]!;
     return Form(
       key: _formKey,
       child: Padding(
@@ -224,7 +226,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                         children: [
                           Expanded(
                             child: Text(
-                              (widget.sm.settings["Lat/Long type"] == "Decimal") ? "Switch to degrees" : "Switch to decimal",
+                              (widget.sm.settings["Lat/Long output"] == "Decimal") ? "Switch to degrees" : "Switch to decimal",
                             ),
                           ),
                           Expanded(child: Icon(Icons.swap_horiz),),
@@ -233,7 +235,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                     ),
                     onPressed: () {
                       FocusScope.of(context).unfocus();
-                      if (widget.sm.settings["Lat/Long type"] == "Decimal") {
+                      if (widget.sm.settings["Lat/Long output"] == "Decimal") {
                         convertDecimalDegree("Degrees");
                       } else {
                         convertDecimalDegree("Decimal");
@@ -536,36 +538,39 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
               ],
             ),
 
-            Padding(padding: EdgeInsets.only(bottom: 16.0)),
-
-            Row(
-                children: [
-                  Text(
-                    "///",
-                    style: TextStyle(
-                      color: Color.fromRGBO(225, 31, 38, 1),
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: threeWordsController,
-                      enabled: false,
-                      style: TextStyle(
-                        fontSize: 20.0,
+            Visibility(
+              visible: widget.sm.settings["What3Words"],
+              child: Container(
+                child: Row(
+                    children: [
+                      Text(
+                        "///",
+                        style: TextStyle(
+                          color: Color.fromRGBO(225, 31, 38, 1),
+                          fontSize: 20.0,
+                        ),
                       ),
-                      decoration: InputDecoration(
-                        hintText: "what.three.words",
-                        border: InputBorder.none,
+                      Expanded(
+                        child: TextFormField(
+                          controller: threeWordsController,
+                          enabled: false,
+                          style: TextStyle(
+                            fontSize: 20.0,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: "what.three.words",
+                            border: InputBorder.none,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.content_copy),
-                    iconSize: 18.0,
-                    onPressed: () => copyFieldToClipboard(threeWordsController),
-                  ),
-                ]
+                      IconButton(
+                        icon: Icon(Icons.content_copy),
+                        iconSize: 18.0,
+                        onPressed: () => copyFieldToClipboard(threeWordsController),
+                      ),
+                    ]
+                ),
+              ),
             ),
           ],
         ),

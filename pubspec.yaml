@@ -1,5 +1,5 @@
 name: coord_translator
-description: A new Flutter application.
+description: A flutter application to convert .
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -13,7 +13,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # 1.2.1 - changed grid reference input for numerical references to be separated by a space rather than a comma
 # 1.2.2 - fixed issue with what3words section not working on release
 # 1.2.3 - updated what3words logo and removed lines under output values
-version: 1.2.3+3
+# 1.2.4 - added option to turn off what3words output
+# 1.2.5 - redesigned settings menu and added more functionality for output formatting
+# 1.2.6 - bug fixes
+version: 1.2.6+4
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -28,7 +31,7 @@ dependencies:
   url_launcher: ^6.0.3
   image_picker: ^0.7.3
   path: ^1.7.0
-  what3words: ^3.0.4
+  what3words: ^3.1.0-nullsafety.3
   flutter_local_notifications: ^5.0.0
   fluttertoast: ^8.0.3
 

@@ -4,9 +4,14 @@ import 'package:path_provider/path_provider.dart';
 
 class SettingsManager {
 
-  Map<String, String> settings = {
+  Map<String, dynamic> settings = {
     "Lat/Long type":"Decimal",
-    "OS type":"Numerical"
+    "OS type":"Numerical",
+    "What3Words":true,
+    "EastingNorthing":true,
+    "Numerical":true,
+    "Letter":true,
+    "Lat/Long output":"Decimal",
   };
 
   ///if the file does not exists, the program creates it and fills it with the default settings
@@ -25,7 +30,10 @@ class SettingsManager {
     final file = File("${loadDirectory.path}/settings.json");
     String rawSettings = await file.readAsString();
     if (rawSettings != "") {
-      settings = Map.from(convert.jsonDecode(rawSettings));
+      Map<String, dynamic> newSettings = Map.from(convert.jsonDecode(rawSettings));
+      //print(newSettings["EastingNorthing"]);
+      settings.updateAll((key, value) => newSettings.containsKey(key) ? value = newSettings[key] : value = value); //updates current settings without deleting any new ones (for any settings added in updates)
+      //print(settings["EastingNorthing"]);
     }
   }
 
@@ -33,6 +41,7 @@ class SettingsManager {
     final saveDirectory = await getApplicationDocumentsDirectory();
     final file = File("${saveDirectory.path}/settings.json");
     file.writeAsString(convert.jsonEncode(settings));
+    //print(settings["EastingNorthing"]);
   }
 
 }
