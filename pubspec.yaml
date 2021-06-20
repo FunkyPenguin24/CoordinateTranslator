@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # 1.2.4 - added option to turn off what3words output
 # 1.2.5 - redesigned settings menu and added more functionality for output formatting
 # 1.2.6 - bug fixes
-version: 1.2.6+4
+version: 1.2.6+14
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
