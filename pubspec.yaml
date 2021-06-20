@@ -31,7 +31,7 @@ dependencies:
   url_launcher: ^6.0.3
   image_picker: ^0.7.3
   path: ^1.7.0
-  what3words: ^3.1.0-nullsafety.3
+  what3words: ^3.1.0
   flutter_local_notifications: ^5.0.0
   fluttertoast: ^8.0.3
 
