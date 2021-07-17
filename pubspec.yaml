@@ -16,7 +16,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # 1.2.4 - added option to turn off what3words output
 # 1.2.5 - redesigned settings menu and added more functionality for output formatting
 # 1.2.6 - bug fixes
-version: 1.2.6+14
+# 1.2.7 - added dark mode in settings menu
+version: 1.2.7+15
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -34,6 +35,7 @@ dependencies:
   what3words: ^3.1.0
   flutter_local_notifications: ^5.0.0
   fluttertoast: ^8.0.3
+  dynamic_themes: ^1.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -41,8 +43,8 @@ dependencies:
   cupertino_icons: ^0.1.3
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  #flutter_test:
+  #  sdk: flutter
   flutter_launcher_icons: ^0.7.5
 
 flutter_icons:

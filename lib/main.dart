@@ -1,22 +1,26 @@
+import 'package:dynamic_themes/dynamic_themes.dart';
 import 'package:flutter/material.dart';
+import 'AppThemes.dart';
 import 'ConverterScreen.dart';
-//import 'MyPlacesScreen.dart';
-//import 'SettingsDrawer.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Coordinate translator',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Coordinate Translator'),
+    return DynamicTheme(
+      themeCollection: themeCollection,
+      defaultThemeId: AppThemes.LIGHT,
+      builder: (context, theme) {
+        return MaterialApp(
+          title: 'Coordinate translator',
+          theme: theme,
+          home: MyHomePage(title: 'Coordinate Translator'),
+        );
+      },
     );
   }
 }
