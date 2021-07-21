@@ -37,8 +37,8 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
   double? latDec;
   double? longDec;
-  dynamic? latDms;
-  dynamic? longDms;
+  dynamic latDms;
+  dynamic longDms;
 
   TextEditingController threeWordsController = TextEditingController();
 

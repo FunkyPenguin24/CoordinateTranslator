@@ -65,6 +65,7 @@ class ConverterScreenState extends State<ConverterScreen> with SingleTickerProvi
             actions: [
               IconButton(
                 onPressed: () {
+                  FocusScope.of(context).unfocus();
                   _scaffoldKey.currentState!.openEndDrawer();
                 },
                 icon: Icon(Icons.settings),

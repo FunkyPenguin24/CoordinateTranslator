@@ -17,7 +17,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # 1.2.5 - redesigned settings menu and added more functionality for output formatting
 # 1.2.6 - bug fixes
 # 1.2.7 - added dark mode in settings menu
-version: 1.2.7+15
+# 1.2.8 - fixed bugs with dark mode
+version: 1.2.8+16
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
