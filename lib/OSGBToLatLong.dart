@@ -31,7 +31,9 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   TextEditingController letterRefController = TextEditingController();
 
   TextEditingController latController = TextEditingController();
+  TextEditingController latDmsController = TextEditingController();
   TextEditingController longController = TextEditingController();
+  TextEditingController longDmsController = TextEditingController(); //TODO set these to the dms result when converting and then do lamba expression to put them in place of normal controllers for textformfields
 
   LatLongConverter converter = new LatLongConverter();
 
@@ -145,13 +147,10 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   }
 
   updateFields() {
-    if (widget.sm.settings["Lat/Long output"] == "Decimal") {
-      latController.text = (latDec != null) ? "${latDec!.toStringAsFixed(4)}" : "";
-      longController.text = (longDec != null) ? "${longDec!.toStringAsFixed(4)}" : "";
-    } else {
-      latController.text = (latDms != null) ? "${latDms[0]}° ${latDms[1]}' ${latDms[2].toStringAsFixed(4)}\"" : "";
-      longController.text = (longDms != null) ? "${longDms[0]}° ${longDms[1]}' ${longDms[2].toStringAsFixed(4)}\"" : "";
-    }
+    latController.text = (latDec != null) ? "${latDec!.toStringAsFixed(4)}" : "";
+    longController.text = (longDec != null) ? "${longDec!.toStringAsFixed(4)}" : "";
+    latDmsController.text = (latDms != null) ? "${latDms[0]}° ${latDms[1]}' ${latDms[2].toStringAsFixed(4)}\"" : "";
+    longDmsController.text = (longDms != null) ? "${longDms[0]}° ${longDms[1]}' ${longDms[2].toStringAsFixed(4)}\"" : "";
   }
 
   void showErrorMessage(String ex) {
@@ -244,13 +243,14 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                   ),
                 ),
               ],
-            ),
+            ), //top 2 buttons
 
             Padding(padding: EdgeInsets.only(bottom: 16.0)),
 
             Visibility(
               visible: !(widget.sm.settings["OS type"] == "Letter"),
               child: Container(
+                padding: EdgeInsets.only(bottom: 16.0),
                 width: MediaQuery.of(context).size.width,
                 child: Row(
                   children: [
@@ -346,102 +346,98 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                   ],
                 ),
               )
-            ),
+            ), //easting northing
 
             Visibility(
               visible: !(widget.sm.settings["OS type"] == "Letter"),
-              child: Padding(padding: EdgeInsets.only(bottom: 16.0)),
-            ),
-
-            Visibility(
-              visible: !(widget.sm.settings["OS type"] == "Letter"),
-              child: Row(
+              child: Column(
                 children: [
-                  Text(
-                    "Full numerical reference",
-                    style: TextStyle(
-                      fontSize: 20.0,
+                  Row(
+                    children: [
+                      Text(
+                        "Full numerical reference",
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  TextFormField(
+                    controller: numRefController,
+                    focusNode: numRefFocus,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Enter a valid reference!";
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (value) {
+                      convert();
+                    },
+                    onChanged: (value) {
+                      updateEastingNorthingText();
+                      if (value.length == 13) {
+                        FocusScope.of(context).unfocus();
+                      }
+                    },
+                    decoration: InputDecoration(
+                      hintText: "460334 452192",
+                      suffixIcon: SizedBox(
+                        width: 50,
+                        child: IconButton(
+                          icon: Icon(Icons.clear),
+                          iconSize: 18.0,
+                          onPressed: () => clearField(numRefController),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-            Visibility(
-              visible: !(widget.sm.settings["OS type"] == "Letter"),
-              child: TextFormField(
-                controller: numRefController,
-                focusNode: numRefFocus,
-                //enabled: !(widget.sm.settings["OS type"] == "Letter"),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Enter a valid reference!";
-                  }
-                  return null;
-                },
-                onFieldSubmitted: (value) {
-                  convert();
-                },
-                onChanged: (value) {
-                  updateEastingNorthingText();
-                  if (value.length == 13) {
-                    FocusScope.of(context).unfocus();
-                  }
-                },
-                decoration: InputDecoration(
-                  hintText: "460334 452192",
-                  suffixIcon: SizedBox(
-                    width: 50,
-                    child: IconButton(
-                      icon: Icon(Icons.clear),
-                      iconSize: 18.0,
-                      onPressed: () => clearField(numRefController),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            ), //full numerical ref
 
             Visibility(
               visible: widget.sm.settings["OS type"] == "Letter",
-              child: Row(
+              child: Column(
                 children: [
-                  Text(
-                    "Full letter reference",
-                    style: TextStyle(
-                      fontSize: 20.0,
+                  Row(
+                    children: [
+                      Text(
+                        "Full letter reference",
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  TextFormField(
+                    controller: letterRefController,
+                    //enabled: widget.sm.settings["OS type"] == "Letter",
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Enter a valid reference!";
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (value) {
+                      convert();
+                    },
+                    decoration: InputDecoration(
+                      hintText: "SE 60334 52192",
+                      suffixIcon: SizedBox(
+                        width: 50,
+                        child: IconButton(
+                          icon: Icon(Icons.clear),
+                          iconSize: 18.0,
+                          onPressed: () => clearField(letterRefController),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-            Visibility(
-              visible: widget.sm.settings["OS type"] == "Letter",
-              child: TextFormField(
-                controller: letterRefController,
-                //enabled: widget.sm.settings["OS type"] == "Letter",
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Enter a valid reference!";
-                  }
-                  return null;
-                },
-                onFieldSubmitted: (value) {
-                  convert();
-                },
-                decoration: InputDecoration(
-                  hintText: "SE 60334 52192",
-                  suffixIcon: SizedBox(
-                    width: 50,
-                    child: IconButton(
-                      icon: Icon(Icons.clear),
-                      iconSize: 18.0,
-                      onPressed: () => clearField(letterRefController),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            ), //full letter ref
 
             Padding(padding: EdgeInsets.only(bottom: 16.0)),
 
@@ -472,7 +468,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                   ),
                 ),
               ],
-            ),
+            ), //middle 2 buttons
 
             Padding(padding: EdgeInsets.only(bottom: 16.0)),
 
@@ -490,7 +486,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
               children: [
                 Expanded(
                   child: TextFormField(
-                    controller: latController,
+                    controller: (widget.sm.settings["Lat/Long output"] == "Decimal") ? latController : latDmsController,
                     enabled: false,
                     decoration: InputDecoration(
                       hintText: "Latitude",
@@ -522,7 +518,7 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
               children: [
                 Expanded(
                   child: TextFormField(
-                    controller: longController,
+                    controller: (widget.sm.settings["Lat/Long output"] == "Decimal") ? longController : longDmsController,
                     enabled: false,
                     decoration: InputDecoration(
                       hintText: "Longitude",

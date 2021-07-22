@@ -169,36 +169,109 @@ class SettingsDrawerState extends State<SettingsDrawer> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "App theme",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: 18.0,
-                              ),
-                            ),
-                            DropdownButton<String>(
-                              value: (DynamicTheme.of(context)!.themeId == AppThemes.LIGHT) ? "Light" : "Dark",
-                              onChanged: (String? newValue) {
-                                switch (newValue) {
-                                  case "Light":
-                                    DynamicTheme.of(context)!.setTheme(AppThemes.LIGHT);
-                                    break;
-                                  case "Dark":
-                                    DynamicTheme.of(context)!.setTheme(AppThemes.DARK);
-                                    break;
-                                }
-                              },
-                              items: [
-                                DropdownMenuItem<String>(
-                                  value: "Light",
-                                  child: Text("Light"),
-                                ),
-                                DropdownMenuItem<String>(
-                                  value: "Dark",
-                                  child: Text("Dark"),
+
+                            Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(bottom: 8.0),
+                                  child: Text(
+                                    "App theme",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: InkWell(
+                                    enableFeedback: false,
+                                    highlightColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                    onTap: () {
+                                      if (DynamicTheme.of(context)!.themeId != AppThemes.LIGHT)
+                                        DynamicTheme.of(context)!.setTheme(AppThemes.LIGHT);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(4.0),
+                                      margin: EdgeInsets.only(right: 4.0),
+                                      child: Text(
+                                        "Light",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                        ),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: (DynamicTheme.of(context)!.themeId == AppThemes.LIGHT) ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+                                        border: Border.all(width: 3.0, color: Theme.of(context).primaryColorDark),
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: InkWell(
+                                    enableFeedback: false,
+                                    highlightColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                    onTap: () {
+                                      if (DynamicTheme.of(context)!.themeId != AppThemes.DARK)
+                                        DynamicTheme.of(context)!.setTheme(AppThemes.DARK);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(4.0),
+                                      margin: EdgeInsets.only(right: 4.0),
+                                      child: Text(
+                                        "Dark",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                        ),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: (DynamicTheme.of(context)!.themeId == AppThemes.DARK) ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+                                        border: Border.all(width: 3.0, color: Theme.of(context).primaryColorDark),
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            // Text(
+                            //   "App theme",
+                            //   textAlign: TextAlign.left,
+                            //   style: TextStyle(
+                            //     fontSize: 18.0,
+                            //   ),
+                            // ),
+                            // DropdownButton<String>(
+                            //   value: (DynamicTheme.of(context)!.themeId == AppThemes.LIGHT) ? "Light" : "Dark",
+                            //   onChanged: (String? newValue) {
+                            //     switch (newValue) {
+                            //       case "Light":
+                            //         DynamicTheme.of(context)!.setTheme(AppThemes.LIGHT);
+                            //         break;
+                            //       case "Dark":
+                            //         DynamicTheme.of(context)!.setTheme(AppThemes.DARK);
+                            //         break;
+                            //     }
+                            //   },
+                            //   items: [
+                            //     DropdownMenuItem<String>(
+                            //       value: "Light",
+                            //       child: Text("Light"),
+                            //     ),
+                            //     DropdownMenuItem<String>(
+                            //       value: "Dark",
+                            //       child: Text("Dark"),
+                            //     ),
+                            //   ],
+                            // ),
                           ],
                         ),
                       ),
@@ -227,32 +300,88 @@ class DropdownSetting extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: EdgeInsets.only(bottom: 8.0),
+        padding: EdgeInsets.only(bottom: 8.0, right: 8.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            DropdownButton<String>(
-              value: widget.sm.settings[settingsKey],
-              onChanged: (String? newValue) {
-                widget.parent.setState(() {
-                  widget.sm.settings[settingsKey] = newValue!;
-                  widget.sm.saveSettings();
-                });
-              },
-              items: options
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+            Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    enableFeedback: false,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: () {
+                      if (widget.sm.settings[settingsKey] != options[0]) { //if not already selected
+                        widget.parent.setState(() {
+                          widget.sm.settings[settingsKey] = options[0];
+                          widget.sm.saveSettings();
+                        });
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(4.0),
+                      margin: EdgeInsets.only(right: 4.0),
+                      child: Text(
+                        options[0],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: (widget.sm.settings[settingsKey] == options[0]) ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+                        border: Border.all(width: 3.0, color: Theme.of(context).primaryColorDark),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: InkWell(
+                    enableFeedback: false,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: () {
+                      if (widget.sm.settings[settingsKey] != options[1]) { //if not already selected
+                        widget.parent.setState(() {
+                          widget.sm.settings[settingsKey] = options[1];
+                          widget.sm.saveSettings();
+                        });
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(4.0),
+                      margin: EdgeInsets.only(right: 4.0),
+                      child: Text(
+                        options[1],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: (widget.sm.settings[settingsKey] == options[1]) ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+                        border: Border.all(width: 3.0, color: Theme.of(context).primaryColorDark),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
