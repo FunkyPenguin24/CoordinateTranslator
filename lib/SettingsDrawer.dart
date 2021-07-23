@@ -172,106 +172,32 @@ class SettingsDrawerState extends State<SettingsDrawer> {
 
                             Row(
                               children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: EdgeInsets.only(bottom: 8.0),
+                                    child: Text(
+                                      "Dark theme",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                                 Container(
-                                  padding: EdgeInsets.only(bottom: 8.0),
-                                  child: Text(
-                                    "App theme",
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: InkWell(
-                                    enableFeedback: false,
-                                    highlightColor: Colors.transparent,
-                                    splashColor: Colors.transparent,
-                                    onTap: () {
-                                      if (DynamicTheme.of(context)!.themeId != AppThemes.LIGHT)
-                                        DynamicTheme.of(context)!.setTheme(AppThemes.LIGHT);
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.all(4.0),
-                                      margin: EdgeInsets.only(right: 4.0),
-                                      child: Text(
-                                        "Light",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                        ),
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: (DynamicTheme.of(context)!.themeId == AppThemes.LIGHT) ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
-                                        border: Border.all(width: 3.0, color: Theme.of(context).primaryColorDark),
-                                        borderRadius: BorderRadius.circular(8.0),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: InkWell(
-                                    enableFeedback: false,
-                                    highlightColor: Colors.transparent,
-                                    splashColor: Colors.transparent,
-                                    onTap: () {
-                                      if (DynamicTheme.of(context)!.themeId != AppThemes.DARK)
+                                  child: Switch(
+                                    value: (DynamicTheme.of(context)!.themeId == AppThemes.DARK),
+                                    onChanged: (value) {
+                                      if (value) {
                                         DynamicTheme.of(context)!.setTheme(AppThemes.DARK);
+                                      } else {
+                                        DynamicTheme.of(context)!.setTheme(AppThemes.LIGHT);
+                                      }
                                     },
-                                    child: Container(
-                                      padding: EdgeInsets.all(4.0),
-                                      margin: EdgeInsets.only(right: 4.0),
-                                      child: Text(
-                                        "Dark",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                        ),
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: (DynamicTheme.of(context)!.themeId == AppThemes.DARK) ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
-                                        border: Border.all(width: 3.0, color: Theme.of(context).primaryColorDark),
-                                        borderRadius: BorderRadius.circular(8.0),
-                                      ),
-                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                            // Text(
-                            //   "App theme",
-                            //   textAlign: TextAlign.left,
-                            //   style: TextStyle(
-                            //     fontSize: 18.0,
-                            //   ),
-                            // ),
-                            // DropdownButton<String>(
-                            //   value: (DynamicTheme.of(context)!.themeId == AppThemes.LIGHT) ? "Light" : "Dark",
-                            //   onChanged: (String? newValue) {
-                            //     switch (newValue) {
-                            //       case "Light":
-                            //         DynamicTheme.of(context)!.setTheme(AppThemes.LIGHT);
-                            //         break;
-                            //       case "Dark":
-                            //         DynamicTheme.of(context)!.setTheme(AppThemes.DARK);
-                            //         break;
-                            //     }
-                            //   },
-                            //   items: [
-                            //     DropdownMenuItem<String>(
-                            //       value: "Light",
-                            //       child: Text("Light"),
-                            //     ),
-                            //     DropdownMenuItem<String>(
-                            //       value: "Dark",
-                            //       child: Text("Dark"),
-                            //     ),
-                            //   ],
-                            // ),
                           ],
                         ),
                       ),
@@ -343,8 +269,11 @@ class DropdownSetting extends StatelessWidget {
                         ),
                       ),
                       decoration: BoxDecoration(
-                        color: (widget.sm.settings[settingsKey] == options[0]) ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
-                        border: Border.all(width: 3.0, color: Theme.of(context).primaryColorDark),
+                        color: Theme.of(context).secondaryHeaderColor,
+                        border: Border.all(
+                          width: 3.0,
+                          color: (widget.sm.settings[settingsKey] == options[0]) ? Theme.of(context).primaryColorDark : Colors.transparent,
+                        ),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                     ),
@@ -374,8 +303,11 @@ class DropdownSetting extends StatelessWidget {
                         ),
                       ),
                       decoration: BoxDecoration(
-                        color: (widget.sm.settings[settingsKey] == options[1]) ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
-                        border: Border.all(width: 3.0, color: Theme.of(context).primaryColorDark),
+                        color: Theme.of(context).secondaryHeaderColor,
+                        border: Border.all(
+                          width: 3.0,
+                          color: (widget.sm.settings[settingsKey] == options[1]) ? Theme.of(context).primaryColorDark : Colors.transparent,
+                        ),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                     ),

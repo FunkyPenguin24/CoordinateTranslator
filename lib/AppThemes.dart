@@ -8,8 +8,8 @@ class AppThemes {
 
 final themeCollection = ThemeCollection(
   themes: {
-    AppThemes.LIGHT: ThemeData(primarySwatch: Colors.blue, brightness: Brightness.light),
-    AppThemes.DARK: ThemeData(primarySwatch: Colors.grey, elevatedButtonTheme: darkButtonTheme, brightness: Brightness.dark, primaryColorBrightness: Brightness.dark),
+    AppThemes.LIGHT: ThemeData(primarySwatch: Colors.blue, brightness: Brightness.light, secondaryHeaderColor: Colors.grey[300], primaryColorDark: Colors.blue),
+    AppThemes.DARK: ThemeData(primarySwatch: Colors.grey, elevatedButtonTheme: darkButtonTheme, brightness: Brightness.dark, primaryColorBrightness: Brightness.dark, primaryColorDark: Colors.blue),
   },
   fallbackTheme: ThemeData.light(),
 );
