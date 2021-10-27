@@ -13,3 +13,4 @@
 * 1.2.8 - fixed bugs with dark mode
 * 1.3.0 - updated dropdown settings to custom switch settings and fixed bug with dms output not switching from settings menu
 * 1.3.1 - updated settings menu and tweaked dark mode colours
+* 1.3.2 - added "show on map" button that shows the user's converted location on a map popup

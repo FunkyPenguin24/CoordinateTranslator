@@ -1,10 +1,12 @@
 import 'package:coord_translator/settingsManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:location/location.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 import 'package:what3words/what3words.dart' as w3w;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'OSMap.dart';
 import 'What3WordsWrapper.dart';
 
 class LatLongToOSGB extends StatefulWidget {
@@ -49,6 +51,8 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
   LatLongConverter converter = new LatLongConverter();
 
   TextEditingController threeWordsController = TextEditingController();
+
+  bool converted = false;
 
   void locate() async {
     Location location = new Location();
@@ -118,6 +122,10 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
       letterRefController.text = letterRef;
       if (widget.sm.settings["What3Words"])
         getWhatThreeWords(latLong);
+
+      setState(() {
+        converted = true;
+      });
     }
   }
 
@@ -181,6 +189,10 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
     letterRefController.text = "";
 
     threeWordsController.text = "";
+
+    setState(() {
+      converted = false;
+    });
   }
 
   void copyFieldToClipboard(TextEditingController field) {
@@ -744,6 +756,23 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                 ),
               )
             ), //w3w
+
+            Visibility(
+              visible: converted,
+              child: Container(
+                child: Row(
+                  children: [
+                    ElevatedButton(
+                      child: Text("Show on map"),
+                      onPressed: () {
+                        showMap(double.parse(latController.text), double.parse(longController.text), context);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
           ],
         ),
       ),
