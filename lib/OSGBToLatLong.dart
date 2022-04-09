@@ -36,7 +36,9 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   TextEditingController latController = TextEditingController();
   TextEditingController latDmsController = TextEditingController();
   TextEditingController longController = TextEditingController();
-  TextEditingController longDmsController = TextEditingController(); //TODO set these to the dms result when converting and then do lamba expression to put them in place of normal controllers for textformfields
+  TextEditingController longDmsController = TextEditingController();
+  TextEditingController fullDecController = TextEditingController();
+  TextEditingController fullDmsController = TextEditingController();
 
   LatLongConverter converter = new LatLongConverter();
 
@@ -161,10 +163,16 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
   }
 
   updateFields() {
+    String type = widget.sm.settings["Lat/Long output"];
     latController.text = (latDec != null) ? "${latDec!.toStringAsFixed(4)}" : "";
     longController.text = (longDec != null) ? "${longDec!.toStringAsFixed(4)}" : "";
     latDmsController.text = (latDms != null) ? "${latDms[0]}° ${latDms[1]}' ${latDms[2].toStringAsFixed(4)}\"" : "";
     longDmsController.text = (longDms != null) ? "${longDms[0]}° ${longDms[1]}' ${longDms[2].toStringAsFixed(4)}\"" : "";
+    if (type == "Decimal") {
+      fullDecController.text = (latDec != null) ? "N ${latDec!.toStringAsFixed(4)}, E ${longDec!.toStringAsFixed(4)}" : "";
+    } else {
+      fullDmsController.text = (latDms != null) ? "N ${latDms[0]}° ${latDms[1]}' ${latDms[2].toStringAsFixed(4)}\", E ${longDms[0]}° ${longDms[1]}' ${longDms[2].toStringAsFixed(4)}\"" : "";
+    }
   }
 
   void showErrorMessage(String ex) {
@@ -544,6 +552,38 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                   icon: Icon(Icons.content_copy),
                   iconSize: 18.0,
                   onPressed: () => copyFieldToClipboard(longController),
+                ),
+              ],
+            ),
+
+            Padding(padding: EdgeInsets.only(bottom: 16.0)),
+
+            Row(
+              children: [
+                Text(
+                    "Latitude and Longitude ($type)",
+                    style: TextStyle(
+                      fontSize: 20.0,
+                    )
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: (type == "Decimal") ? fullDecController: fullDmsController,
+                    enabled: false,
+                    decoration: InputDecoration(
+                      hintText: "Latitude and Longitude",
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.content_copy),
+                  iconSize: 18.0,
+                  onPressed: () => copyFieldToClipboard((type == "Decimal") ? fullDecController: fullDmsController),
                 ),
               ],
             ),
