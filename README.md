@@ -4,14 +4,6 @@ A flutter application for converting coordinates from Lat/Long to OSGB36 grid re
 
 [Now available on Google Play!](https://play.google.com/store/apps/details?id=com.latlonpackage.coord_translator)
 
-## TODO
-
-[ ] Sanitise inputs - only accept valid lat/longs and grid references
-
-[ ] Saved places - allow users to save places when they view the location on a map and add notes/pictures - allow them to view all their saved places on a big map
-
-[ ] Utility section - calculating distance between two grid references (other utility stuff?)
-
 ## Building the project
 
 This repository is a flutter project, not a built app, so you can clone it and edit the project however you want. 
