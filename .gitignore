@@ -45,3 +45,6 @@ app.*.map.json
 
 # Contains private API token
 What3WordsWrapper.dart
+
+#Key signing
+android/key.properties

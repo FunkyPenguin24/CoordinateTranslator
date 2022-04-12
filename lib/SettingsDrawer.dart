@@ -1,5 +1,7 @@
 import 'package:dynamic_themes/dynamic_themes.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'AppThemes.dart';
 import 'settingsManager.dart';
 
@@ -166,39 +168,47 @@ class SettingsDrawerState extends State<SettingsDrawer> {
                     Container(
                       child: Padding(
                         padding: EdgeInsets.only(bottom: 8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: EdgeInsets.only(bottom: 8.0),
-                                    child: Text(
-                                      "Dark theme",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.only(bottom: 8.0),
+                                child: Text(
+                                  "Dark theme",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontSize: 18.0,
                                   ),
                                 ),
-                                Container(
-                                  child: Switch(
-                                    value: (DynamicTheme.of(context)!.themeId == AppThemes.DARK),
-                                    onChanged: (value) {
-                                      if (value) {
-                                        DynamicTheme.of(context)!.setTheme(AppThemes.DARK);
-                                      } else {
-                                        DynamicTheme.of(context)!.setTheme(AppThemes.LIGHT);
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ],
+                              ),
+                            ),
+                            Container(
+                              child: Switch(
+                                value: (DynamicTheme.of(context)!.themeId == AppThemes.DARK),
+                                onChanged: (value) {
+                                  if (value) {
+                                    DynamicTheme.of(context)!.setTheme(AppThemes.DARK);
+                                  } else {
+                                    DynamicTheme.of(context)!.setTheme(AppThemes.LIGHT);
+                                  }
+                                },
+                              ),
                             ),
                           ],
+                        ),
+                      ),
+                    ),
+
+                    Container(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 8.0),
+                        child: ElevatedButton(
+                          child: Text("Reset default map"),
+                          onPressed: () async {
+                            final details = await SharedPreferences.getInstance();
+                            if (await details.remove("map"))
+                              Fluttertoast.showToast(msg: "Default map reset");
+                          },
                         ),
                       ),
                     ),

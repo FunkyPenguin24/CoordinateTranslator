@@ -1,12 +1,15 @@
+import 'dart:convert';
+
 import 'package:coord_translator/settingsManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:location/location.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
+import 'package:map_launcher/map_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:what3words/what3words.dart' as w3w;
 import 'package:fluttertoast/fluttertoast.dart';
-import 'OSMap.dart';
 import 'What3WordsWrapper.dart';
 
 class LatLongToOSGB extends StatefulWidget {
@@ -234,6 +237,83 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
 
   bool latDecimalFilled() => latController.text.isNotEmpty;
   bool longDecimalFilled() => longController.text.isNotEmpty;
+
+
+  openInMap(double lat, double long) async {
+    final List<AvailableMap> availableMaps = await MapLauncher.installedMaps;
+    final coords = Coords(lat, long);
+    final details = await SharedPreferences.getInstance();
+    AvailableMap? selectedMap = (details.containsKey("map")) ? AvailableMap.fromJson(jsonDecode(details.getString("map")!)) : null;
+    if (selectedMap != null) {
+      selectedMap.showMarker(coords: coords, title: "Location");
+      return;
+    }
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return SafeArea(
+              child: SingleChildScrollView(
+                child: Wrap(
+                  children: [
+                    for (dynamic map in availableMaps)
+                      ListTile(
+                        onTap: () {
+                          setState(() {
+                            selectedMap = map;
+                          });
+                        },
+                        title: Text(map.mapName),
+                        tileColor: (selectedMap == map) ? Colors.blue : null,
+                        leading: SvgPicture.asset(
+                          map.icon,
+                          height: 30.0,
+                          width: 30.0,
+                        ),
+                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextButton(
+                            child: Text("Just once"),
+                            style: ButtonStyle(
+                              foregroundColor: MaterialStateProperty.all<Color>((selectedMap != null) ? Colors.blue : Colors.grey),
+                            ),
+                            onPressed: (selectedMap != null) ? () {
+                              selectedMap!.showMarker(coords: coords, title: "Location");
+                              Navigator.pop(context);
+                            } : null,
+                          ),
+                        ),
+                        Expanded(
+                          child: TextButton(
+                            child: Text("Always"),
+                            style: ButtonStyle(
+                              foregroundColor: MaterialStateProperty.all<Color>((selectedMap != null) ? Colors.blue : Colors.grey),
+                            ),
+                            onPressed: (selectedMap != null) ? () {
+                              Map<String, dynamic> json = { //package does not provide json encodable object
+                                "mapName":selectedMap!.mapName,
+                                "mapType":selectedMap!.mapType.toString().split(".").last,
+                              };
+                              details.setString("map", jsonEncode(json));
+                              selectedMap!.showMarker(coords: coords, title: "Location");
+                              Navigator.pop(context);
+                            } : null,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -765,7 +845,7 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                     ElevatedButton(
                       child: Text("Show on map"),
                       onPressed: () {
-                        showMap(double.parse(latController.text), double.parse(longController.text), context);
+                        openInMap(double.parse(latController.text), double.parse(longController.text));
                       },
                     ),
                   ],
