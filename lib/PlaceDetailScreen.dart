@@ -333,9 +333,7 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
                   ),
                   onPressed: () async {
                     final url = "https://www.google.com/maps/search/?api=1&query=${widget.place.latLong.getLat()},${widget.place.latLong.getLon()}";
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    }
+                    await launchUrl(Uri.parse(url));
                   },
                 ),
               ),

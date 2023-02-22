@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'PlaceDetailScreen.dart';
 import 'Places.dart';
 
@@ -12,7 +11,7 @@ class MyPlacesScreen extends StatefulWidget {
 
 class MyPlacesScreenState extends State<MyPlacesScreen> {
 
-  RefreshController _refreshController = RefreshController(initialRefresh: true);
+  //RefreshController _refreshController = RefreshController(initialRefresh: true);
   PlaceManager pm = new PlaceManager();
   List<Place> favPlaces = [];
 
@@ -21,7 +20,7 @@ class MyPlacesScreenState extends State<MyPlacesScreen> {
     this.setState(() {
       favPlaces = pm.favPlaces;
     });
-    _refreshController.refreshCompleted();
+    //_refreshController.refreshCompleted();
   }
 
   @override
@@ -107,18 +106,18 @@ class MyPlacesScreenState extends State<MyPlacesScreen> {
 
       widgetList.add(Padding(padding: EdgeInsets.only(top: 15.0)));
     }
-
-    return new SmartRefresher(
-      controller: _refreshController,
-      enablePullDown: true,
-      onRefresh: refreshList,
-      child: ListView(
-        padding: EdgeInsets.all(16.0),
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        children: widgetList,
-      ),
-    );
+    return new Container();
+    // return new SmartRefresher(
+    //   controller: _refreshController,
+    //   enablePullDown: true,
+    //   onRefresh: refreshList,
+    //   child: ListView(
+    //     padding: EdgeInsets.all(16.0),
+    //     scrollDirection: Axis.vertical,
+    //     shrinkWrap: true,
+    //     children: widgetList,
+    //   ),
+    // );
   }
 
 }

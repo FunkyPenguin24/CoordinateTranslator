@@ -2,6 +2,7 @@ import 'package:dynamic_themes/dynamic_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'AppThemes.dart';
 import 'settingsManager.dart';
 
@@ -208,6 +209,21 @@ class SettingsDrawerState extends State<SettingsDrawer> {
                             final details = await SharedPreferences.getInstance();
                             if (await details.remove("map"))
                               Fluttertoast.showToast(msg: "Default map reset");
+                          },
+                        ),
+                      ),
+                    ),
+
+                    Container(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 8.0),
+                        child: ElevatedButton(
+                          child: Text("Privacy policy"),
+                          onPressed: () async {
+                            Uri uri = Uri.parse("https://funkypenguin.dev/projects/policies#latlong");
+                            if (!await launchUrl(uri)) {
+                              Fluttertoast.showToast(msg: "Could not open policy");
+                            }
                           },
                         ),
                       ),

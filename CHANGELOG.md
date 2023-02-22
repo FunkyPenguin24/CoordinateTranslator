@@ -16,3 +16,4 @@
 * 1.3.2 - added "show on map" button that shows the user's converted location on a map popup
 * 1.3.3 - added new lat long output that puts them both together
 * 1.3.4 - updated show on map button to open in map app of user's choice
+* 1.3.5 - added privacy policy link
