@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:coord_translator/What3WordsWrapper.dart';
 import 'package:coord_translator/settingsManager.dart';
+import 'package:dynamic_themes/dynamic_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,6 +11,8 @@ import 'package:map_launcher/map_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:what3words/what3words.dart' as w3w;
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'AppThemes.dart';
 
 class OSGBToLatLong extends StatefulWidget {
 
@@ -52,6 +55,35 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
 
   TextEditingController threeWordsController = TextEditingController();
 
+  String get latValue {
+    if (widget.sm.settings["Lat/Long output"] == "Decimal") {
+      return latController.text != "" ? latController.text : "";
+    } else {
+      return latDmsController.text != "" ? latDmsController.text : "";
+    }
+  }
+
+  String get fullValue {
+    if (widget.sm.settings["Lat/Long output"] == "Decimal") {
+      return fullDecController.text != "" ? fullDecController.text : "";
+    } else {
+      return fullDmsController.text != "" ? fullDmsController.text : "";
+    }
+  }
+
+  String get longValue {
+    if (widget.sm.settings["Lat/Long output"] == "Decimal") {
+      return longController.text != "" ? longController.text : "";
+    } else {
+      return longDmsController.text != "" ? longDmsController.text : "";
+    }
+  }
+
+  Color get enabledOutputColour {
+    var themeId = DynamicTheme.of(context)!.themeId;
+    return themeId == AppThemes.DARK ? Colors.white : Colors.black;
+  }
+
   void clearField(TextEditingController field) {
     field.text = "";
     if (field == eastingController || field == northingController) {
@@ -81,9 +113,9 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
     updateFields();
   }
 
-  void copyFieldToClipboard(TextEditingController field) {
-    if (field.text.isNotEmpty) {
-      Clipboard.setData(new ClipboardData(text: field.text));
+  void copyFieldToClipboard(String field) {
+    if (field.isNotEmpty) {
+      Clipboard.setData(new ClipboardData(text: field));
       showToast("Copied to clipboard");
     } else {
       showToast("Nothing to copy");
@@ -153,7 +185,11 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
       .convertTo3wa(w3w.Coordinates(latLong.lat, latLong.long))
       .language('en')
       .execute();
-    threeWordsController.text = words.data()?.words ?? "No connection";
+    if (mounted) {
+      setState(() {
+        threeWordsController.text = words.data()?.words ?? "No connection";
+      });
+    }
   }
 
   convertDecimalDegree(String type) {
@@ -582,19 +618,18 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
             Row(
               children: [
                 Expanded(
-                  child: TextFormField(
-                    controller: (widget.sm.settings["Lat/Long output"] == "Decimal") ? latController : latDmsController,
-                    enabled: false,
-                    decoration: InputDecoration(
-                      hintText: "Latitude",
-                      border: InputBorder.none,
+                  child: Text(
+                    latValue != "" ? latValue : "Latitude",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: latValue != "" ? enabledOutputColour : Colors.grey,
                     ),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.content_copy),
                   iconSize: 18.0,
-                  onPressed: () => copyFieldToClipboard(latController),
+                  onPressed: () => copyFieldToClipboard(latValue),
                 ),
               ],
             ),
@@ -614,19 +649,18 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
             Row(
               children: [
                 Expanded(
-                  child: TextFormField(
-                    controller: (widget.sm.settings["Lat/Long output"] == "Decimal") ? longController : longDmsController,
-                    enabled: false,
-                    decoration: InputDecoration(
-                      hintText: "Longitude",
-                      border: InputBorder.none,
+                  child: Text(
+                    longValue != "" ? longValue : "Longitude",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: longValue != "" ? enabledOutputColour : Colors.grey,
                     ),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.content_copy),
                   iconSize: 18.0,
-                  onPressed: () => copyFieldToClipboard(longController),
+                  onPressed: () => copyFieldToClipboard(longValue),
                 ),
               ],
             ),
@@ -646,19 +680,18 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
             Row(
               children: [
                 Expanded(
-                  child: TextFormField(
-                    controller: (type == "Decimal") ? fullDecController: fullDmsController,
-                    enabled: false,
-                    decoration: InputDecoration(
-                      hintText: "Latitude and Longitude",
-                      border: InputBorder.none,
+                  child: Text(
+                    fullValue != "" ? fullValue : "Latitude and Longitude",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: fullValue != "" ? enabledOutputColour : Colors.grey,
                     ),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.content_copy),
                   iconSize: 18.0,
-                  onPressed: () => copyFieldToClipboard((type == "Decimal") ? fullDecController: fullDmsController),
+                  onPressed: () => copyFieldToClipboard(fullValue),
                 ),
               ],
             ),
@@ -676,22 +709,18 @@ class OSGBToLatLongState extends State<OSGBToLatLong> with AutomaticKeepAliveCli
                         ),
                       ),
                       Expanded(
-                        child: TextFormField(
-                          controller: threeWordsController,
-                          enabled: false,
+                        child: Text(
+                          threeWordsController.text != "" ? threeWordsController.text : "what.three.words",
                           style: TextStyle(
-                            fontSize: 20.0,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: "what.three.words",
-                            border: InputBorder.none,
+                            fontSize: 16.0,
+                            color: threeWordsController.text != "" ? enabledOutputColour : Colors.grey,
                           ),
                         ),
                       ),
                       IconButton(
                         icon: Icon(Icons.content_copy),
                         iconSize: 18.0,
-                        onPressed: () => copyFieldToClipboard(threeWordsController),
+                        onPressed: () => copyFieldToClipboard(threeWordsController.text),
                       ),
                     ]
                 ),

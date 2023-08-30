@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:coord_translator/settingsManager.dart';
+import 'package:dynamic_themes/dynamic_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,6 +11,7 @@ import 'package:map_launcher/map_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:what3words/what3words.dart' as w3w;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'AppThemes.dart';
 import 'What3WordsWrapper.dart';
 
 class LatLongToOSGB extends StatefulWidget {
@@ -56,6 +58,11 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
   TextEditingController threeWordsController = TextEditingController();
 
   bool converted = false;
+
+  Color get enabledOutputColour {
+    var themeId = DynamicTheme.of(context)!.themeId;
+    return themeId == AppThemes.DARK ? Colors.white : Colors.black;
+  }
 
   void locate() async {
     Location location = new Location();
@@ -123,8 +130,9 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
       northingController.text =  northing;
       numRefController.text = numRef;
       letterRefController.text = letterRef;
-      if (widget.sm.settings["What3Words"])
+      if (widget.sm.settings["What3Words"]) {
         getWhatThreeWords(latLong);
+      }
 
       setState(() {
         converted = true;
@@ -132,13 +140,17 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
     }
   }
 
-  void getWhatThreeWords(LatLong latLong) async {
+  getWhatThreeWords(LatLong latLong) async {
     var api = w3w.What3WordsV3(TOKEN);
     var words = await api
       .convertTo3wa(w3w.Coordinates(latLong.lat, latLong.long))
       .language('en')
       .execute();
-    threeWordsController.text = words.data()?.words ?? "No connection";
+    if (mounted) {
+      setState(() {
+        threeWordsController.text = words.data()?.words ?? "No connection";
+      });
+    }
   }
 
   convertDecimalDegree(String type) {
@@ -665,12 +677,11 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                           Row(
                             children: [
                               Expanded(
-                                child: TextField(
-                                  controller: eastingController,
-                                  enabled: false,
-                                  decoration: InputDecoration(
-                                    hintText: "460334",
-                                    border: InputBorder.none,
+                                child: Text(
+                                  eastingController.text != "" ? eastingController.text : "460334",
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: eastingController.text != "" ? enabledOutputColour : Colors.grey,
                                   ),
                                 ),
                               ),
@@ -698,12 +709,11 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                           Row(
                             children: [
                               Expanded(
-                                child: TextFormField(
-                                  controller: northingController,
-                                  enabled: false,
-                                  decoration: InputDecoration(
-                                    hintText: "452192",
-                                    border: InputBorder.none,
+                                child: Text(
+                                  northingController.text != "" ? northingController.text : "452192",
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: northingController.text != "" ? enabledOutputColour : Colors.grey,
                                   ),
                                 ),
                               ),
@@ -741,12 +751,11 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                     Row(
                       children: [
                         Expanded(
-                          child: TextFormField(
-                            controller: numRefController,
-                            enabled: false,
-                            decoration: InputDecoration(
-                              hintText: "460334 452192",
-                              border: InputBorder.none,
+                          child: Text(
+                            numRefController.text != "" ? numRefController.text : "460334 452192",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: numRefController.text != "" ? enabledOutputColour : Colors.grey,
                             ),
                           ),
                         ),
@@ -781,12 +790,11 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                       Row(
                         children: [
                           Expanded(
-                            child: TextFormField(
-                              controller: letterRefController,
-                              enabled: false,
-                              decoration: InputDecoration(
-                                hintText: "SE 60334 52192",
-                                border: InputBorder.none,
+                            child: Text(
+                              letterRefController.text != "" ? letterRefController.text : "SE 60334 52192",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: letterRefController.text != "" ? enabledOutputColour : Colors.grey,
                               ),
                             ),
                           ),
@@ -815,15 +823,11 @@ class LatLongToOSGBState extends State<LatLongToOSGB> with AutomaticKeepAliveCli
                       ),
                     ),
                     Expanded(
-                      child: TextFormField(
-                        controller: threeWordsController,
-                        enabled: false,
+                      child: Text(
+                        threeWordsController.text != "" ? threeWordsController.text : "what.three.words",
                         style: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: "what.three.words",
-                          border: InputBorder.none,
+                          fontSize: 16.0,
+                          color: threeWordsController.text != "" ? enabledOutputColour : Colors.grey,
                         ),
                       ),
                     ),

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+//import 'package:image_picker/image_picker.dart';
 import 'package:latlong_to_osgrid/latlong_to_osgrid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -45,21 +45,21 @@ class PlaceDetailScreenState extends State<PlaceDetailScreen> {
   }
 
   getImage(String source) async {
-    final pickedImg = await ImagePicker().getImage(source: (source == "camera") ? ImageSource.camera : ImageSource.gallery);
-    if (pickedImg != null) {
-      File img = File(pickedImg.path);
-      this.setState(() {
-        placeImage = img;
-        widget.place.imagePath = path.basename(img.path);
-      });
-      //fix saving issue - app can't find pictures give the file name (might be something to do with pickedimg.path but not sure)
-      //look in to adding multiple pictures, maybe change imagePath in place object to a list
-      final saveDir = await getApplicationDocumentsDirectory();
-      String fileName = path.basename(img.path);
-      String savePath = "${saveDir.path}/$fileName}";
-      await img.copy(savePath);
-      pm.saveFavPlaces();
-    }
+    // final pickedImg = await ImagePicker().getImage(source: (source == "camera") ? ImageSource.camera : ImageSource.gallery);
+    // if (pickedImg != null) {
+    //   File img = File(pickedImg.path);
+    //   this.setState(() {
+    //     placeImage = img;
+    //     widget.place.imagePath = path.basename(img.path);
+    //   });
+    //   //fix saving issue - app can't find pictures give the file name (might be something to do with pickedimg.path but not sure)
+    //   //look in to adding multiple pictures, maybe change imagePath in place object to a list
+    //   final saveDir = await getApplicationDocumentsDirectory();
+    //   String fileName = path.basename(img.path);
+    //   String savePath = "${saveDir.path}/$fileName}";
+    //   await img.copy(savePath);
+    //   pm.saveFavPlaces();
+    // }
   }
 
   loadPlaces() async {
